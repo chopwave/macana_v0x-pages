@@ -516,6 +516,7 @@
     <div class="tab" onclick="swTab('val','sz',this)" title="大型・中型・小型株の PBR 水準を並べて、どのサイズ帯が相対的に買われているかを確認します">規模別スプレッド<br><span style="font-size:9px;opacity:.65;font-weight:400">大・中・小型</span></div>
     <div class="tab" onclick="swTab('val','mfg',this)" title="製造業 vs 非製造業のPBR推移">製造・非製造<br><span style="font-size:9px;opacity:.65;font-weight:400">業態比較</span></div>
     <div class="tab" onclick="swTab('val','spr',this)" title="単純平均と加重平均の差を見て、大型株主導か中小株主導かを確認します。正値は中小株が相対的に高く、負値は大型株が指数を押し上げています">単純/加重スプレッド<br><span style="font-size:9px;opacity:.65;font-weight:400">中小 vs 大型乖離</span></div>
+    <div class="tab" onclick="swTab('val','per',this);renderPerCharts()" title="市場全体PERの時系列推移と全33業種のPER推移を確認します">PER推移<br><span style="font-size:9px;opacity:.65;font-weight:400">全体・業種別</span></div>
   </div>
   <div class="tp act" id="val-mkt">
     <div class="card">
@@ -575,6 +576,27 @@
         <span><span style="color:var(--accent)">■</span> 負（大型株が指数を押し上げ）</span>
       </div>
       <div class="ch" style="height:380px"><canvas id="sprC"></canvas></div></div>
+  </div>
+  <div class="tp" id="val-per">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">市場全体 PER 時系列<span class="ym-badge" title="縦線マーカー（年月連動）">縦線マーカー</span></span></div>
+      <div class="ch ch-300"><canvas id="perTrendC"></canvas></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="card-hd">
+        <span class="card-title">業種別 PER 推移<span class="ym-badge" title="全33業種の月次PER推移（2020/01〜）">全業種</span></span>
+        <span style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;color:var(--muted)">
+            <span style="color:var(--accent)">■</span> グロース
+            <span style="color:var(--green);margin-left:6px">■</span> ディフェンシブ
+            <span style="color:var(--amber);margin-left:6px">■</span> シクリカル
+            <span style="color:var(--purple);margin-left:6px">■</span> バリュー
+          </span>
+          <button class="tb-btn" id="perSectorToggleBtn" onclick="toggleAllLines('perSector','perSectorToggleBtn')" style="font-size:10px">全て非表示にする</button>
+        </span>
+      </div>
+      <div class="ch" style="height:440px"><canvas id="perSectorC"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -1406,15 +1428,15 @@
 </div>
 
 
-<script src="./assets/jpx/data.js"></script>
-<script src="./assets/jpx/overview.js"></script>
-<script src="./assets/jpx/heatmap.js"></script>
-<script src="./assets/jpx/charts.js"></script>
-<script src="./assets/jpx/notes.js"></script>
-<script src="./assets/jpx/features.js"></script>
-<script src="./assets/jpx/navigation.js"></script>
-<script src="./assets/jpx/cycle.js"></script>
-<script src="./assets/jpx/stocks.js"></script>
+<script src="./assets/jpx/data.js?v=20260419"></script>
+<script src="./assets/jpx/overview.js?v=20260419"></script>
+<script src="./assets/jpx/heatmap.js?v=20260419"></script>
+<script src="./assets/jpx/charts.js?v=20260419"></script>
+<script src="./assets/jpx/notes.js?v=20260419"></script>
+<script src="./assets/jpx/features.js?v=20260419"></script>
+<script src="./assets/jpx/navigation.js?v=20260419"></script>
+<script src="./assets/jpx/cycle.js?v=20260419"></script>
+<script src="./assets/jpx/stocks.js?v=20260419"></script>
 
 
 <!-- B-4: セクター詳細ダイアログ -->

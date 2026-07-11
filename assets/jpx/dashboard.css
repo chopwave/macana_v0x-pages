@@ -297,6 +297,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   .topbar{
     flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;min-height:auto
   }
+  .topbar > *{min-width:0}
   .sidebar{
     position:fixed;top:56px;left:0;bottom:0;width:min(220px,88vw);z-index:250;
     box-shadow:0 10px 30px rgba(0,0,0,.28)
@@ -323,7 +324,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   .card-meta{white-space:nowrap}
   .shortcut-fab{right:12px;bottom:12px;width:42px;height:42px}
   #slMktSel,#slScaleSel,#slSearch,#stocksSearch,#stocksRankSel,#stocksStepSel{min-height:38px}
-  .rec-name{width:auto;flex:1 1 auto}
+  .comp-bar{align-items:flex-start;flex-wrap:wrap}
+  .comp-bar-lbl{width:auto;min-width:88px;flex:0 0 auto}
+  .comp-bar-track{flex:1 1 140px}
+  .comp-bar-val{width:auto;min-width:40px}
+  .sbar-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px;align-items:center}
+  .sbar-name{width:auto;min-width:0;grid-column:1/-1}
+  .sbar-track{grid-column:1/2}
+  .sbar-val,.sbar-chg{width:auto}
+  .rec-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px;align-items:start}
+  .rec-name{width:auto;min-width:0;grid-column:1/-1;flex:none}
+  .rec-cat{width:auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .rec-pbr,.rec-z,.rec-sig{width:auto}
   .rec-detail{display:none}
   .chart-legend-grid{grid-template-columns:1fr}
 }
@@ -341,8 +353,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   .topbar > .pill,.topbar > .pill-toggle,.topbar > .tb-btn,.topbar > .tb-ym{flex:1 1 auto}
   .topbar > .logo{flex:1 1 100%}
   .topbar > .info-icon{order:20}
+  .topbar > #dataModePill,
+  .topbar > #themePill,
+  .topbar > #chartModePill{flex:1 1 calc(50% - 6px)}
   .card-hd[style*="flex-wrap:wrap"] > div[style*="margin-left:auto"]{width:100%;margin-left:0!important}
   #slMktSel,#slScaleSel,#slSearch,#stocksSearch,#stocksRankSel,#stocksStepSel{width:100%!important}
+  #slSectorPills,#stocksSectorPills{flex-wrap:nowrap!important;overflow-x:auto;padding-bottom:2px}
+  #slSectorPills .ftag,#stocksSectorPills .ftag{flex:0 0 auto}
+  .page-links{gap:4px}
+  .filter-bar{padding:8px 10px}
+  .filter-group{gap:6px}
+  .slider-wrap{flex-wrap:wrap}
+  .slider-wrap input{width:100%}
+  .comp-bar{gap:4px}
+  .comp-bar-lbl{min-width:0;flex:1 1 100%}
+  .comp-bar-track{flex-basis:100%}
+  .sbar-row{grid-template-columns:minmax(0,1fr) auto}
+  .sbar-track{grid-column:1/-1}
+  .rec-row{grid-template-columns:minmax(0,1fr) auto}
+  .rec-cat{grid-column:1/2}
+  .rec-sig{grid-column:2/3}
+  .rec-pbr,.rec-z{font-size:10px}
+  #noteAuthor{width:100%!important}
   [data-tip]::after{max-width:min(220px,calc(100vw - 32px))}
   .tab{padding:6px 10px;font-size:10px}
   .page-link{font-size:9px;padding:4px 8px}
@@ -355,6 +387,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   .tb-ym{min-width:108px}
   .chart-legend-grid{gap:4px}
   .legend-chip{padding:4px 6px;font-size:9px}
+  .topbar > #dataModePill,
+  .topbar > #themePill,
+  .topbar > #chartModePill,
+  .topbar > .tb-ym{flex:1 1 100%}
   .sig-table td[style*="white-space:nowrap"] button{padding:2px 6px!important;font-size:9px!important}
   #heatLineFilterBtn,#heatLineAllBtn,#decompCapLineAllBtn,#decompNavLineAllBtn{padding:3px 8px!important;font-size:10px!important}
 }

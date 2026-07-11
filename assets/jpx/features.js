@@ -131,6 +131,7 @@ function renderPhaseHistory(){
     }
     else if(e.key==='0') goto(PAGES[9],null,false);
     else if(e.key==='t'||e.key==='T') toggleTheme();
+    else if(e.key==='c'||e.key==='C') toggleCompMode();
     else if(e.key==='?') showShortcutHelp();
     else if(e.key==='Escape'){
       const dlg=document.querySelector('dialog[open]');
@@ -151,6 +152,7 @@ function renderPhaseHistory(){
       <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:11px;line-height:1.8">
         <span style="font-family:var(--mono);color:var(--accent)">← / →</span><span style="color:var(--muted)">年月を前後に移動</span>
         ${PAGE_LABELS.map(l=>`<span style="font-family:var(--mono);color:var(--accent)">${l.split(':')[0]}</span><span style="color:var(--muted)">${l.split(':')[1]}へ移動</span>`).join('')}
+        <span style="font-family:var(--mono);color:var(--accent)">C</span><span style="color:var(--muted)">比較モード ON/OFF（バリュエーション 市場トレンド）</span>
         <span style="font-family:var(--mono);color:var(--accent)">T</span><span style="color:var(--muted)">テーマ切替（Dark/Light）</span>
         <span style="font-family:var(--mono);color:var(--accent)">[</span><span style="color:var(--muted)">サイドバー開閉</span>
         <span style="font-family:var(--mono);color:var(--accent)">?</span><span style="color:var(--muted)">このヘルプを表示</span>

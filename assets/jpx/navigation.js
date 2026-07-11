@@ -44,6 +44,7 @@ function onYm(v){
   _onYmDecomp(v);
   _onYmCycle(v);
   _flashYmLinked();
+  if(typeof _compMode!=='undefined'&&_compMode) renderCompChart();
 }
 function _onYmDecomp(yyyymm){
   const dh=DASHBOARD_DATA?.decomp_history||SAMPLE_DECOMP_HISTORY;
@@ -164,7 +165,7 @@ function _onYmKpi(yyyymm,ym){
 function _onYmVline(ym){
   const shape={type:'line',x0:ym,x1:ym,y0:0,y1:1,xref:'x',yref:'paper',
     line:{color:'rgba(255,200,50,.55)',width:1.5,dash:'dot'}};
-  ['trendC','valTrendC','sizeC','mfgC','cyclePhaseC','cdRatioC'].forEach(id=>{
+  ['trendC','valTrendC','sizeC','mfgC','cyclePhaseC','cdRatioC','perTrendC'].forEach(id=>{
     const el=document.getElementById(id+'Plotly');
     if(el&&el.data) Plotly.relayout(el,{shapes:[shape]});
   });

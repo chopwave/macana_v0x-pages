@@ -781,6 +781,82 @@ function renderPlotlyCycle(){
     yaxis:{title:'C/D比率'}
   });
 }
+// ─── PER推移タブ ───
+let _perChartsInited=false;
+function renderPerCharts(){
+  if(_perChartsInited) return;
+  _perChartsInited=true;
+
+  // 全体PER時系列
+  charts.perTrend=mk('perTrendC',{type:'line',
+    data:{labels:MONTHS,datasets:[lineDs('PER',PER_TS,accentAmber(),'y')]},
+    options:{...GC,
+      plugins:{
+        title:chartTitle('市場全体 PER 時系列'),
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>ttLabel('PER',c.parsed.y,'x',1)}},
+        emptyState:{display:true,text:'PER時系列データなし'}
+      },
+      scales:{
+        x:{ticks:{color:chartTickColor(),font:{size:10}},grid:{color:chartGridColor()}},
+        y:{title:{display:true,text:'PER（倍）',color:chartTickColor(),font:{size:10}},
+           ticks:{color:chartTickColor(),font:{size:10},callback:v=>v+'x'},
+           grid:{color:chartGridColor()}}
+      }
+    }
+  });
+
+  // 業種別PER時系列
+  const{labels,datasets}=_buildSectorTimeSeries(s=>s.per);
+  const perSectorCanvas=document.getElementById('perSectorC');
+  if(perSectorCanvas){
+    charts.perSector=new Chart(perSectorCanvas,{type:'line',
+      data:{labels,datasets},
+      options:{
+        responsive:true,maintainAspectRatio:false,animation:false,spanGaps:true,
+        plugins:{
+          title:chartTitle('業種別 PER 推移'),
+          legend:{labels:{color:chartLabelColor(),font:{size:9},boxWidth:10,padding:4}},
+          tooltip:{callbacks:{label:ctx=>ttLabel(ctx.dataset.label,ctx.parsed.y,'x',1)}},
+          emptyState:{display:true,text:'業種別PERデータなし'}
+        },
+        scales:{
+          x:{ticks:{color:chartTickColor(),font:{size:9},maxTicksLimit:12},grid:{color:chartGridColor()}},
+          y:{title:{display:true,text:'PER（倍）',color:chartTickColor(),font:{size:10}},
+             ticks:{color:chartTickColor(),font:{size:10},callback:v=>v+'x'},
+             grid:{color:chartGridColor()}}
+        }
+      }
+    });
+  }
+
+  // Plotlyモード対応
+  _renderPlotlyPerCharts(labels,datasets);
+}
+function _renderPlotlyPerCharts(labels,datasets){
+  renderPlotlyChart('perTrendC',[
+    {type:'scatter',mode:'lines+markers',name:'PER',x:MONTHS,y:PER_TS,
+      line:{color:'#f5a623',width:2},marker:{size:5},
+      hovertemplate:'%{x}<br>PER: %{y:.1f}x<extra></extra>'}
+  ],{
+    yaxis:{title:'PER（倍）',ticksuffix:'x'},
+    margin:{l:56,r:16,t:24,b:44}
+  });
+  renderPlotlyChart('perSectorC',
+    (datasets||[]).map(ds=>({
+      type:'scatter',mode:'lines',name:ds.label,
+      x:labels,y:ds.data,
+      line:{color:ds.borderColor,width:1.5},
+      hovertemplate:`%{fullData.name}<br>PER: %{y:.1f}x<extra></extra>`
+    })),
+    {title:{text:'業種別 PER 推移',font:{size:10}},
+      margin:{l:56,r:16,t:24,b:44},
+      xaxis:{tickangle:0,nticks:12},
+      yaxis:{title:'PER（倍）',ticksuffix:'x'},
+      legend:{font:{size:9},orientation:'v',x:1.01,y:1}}
+  );
+}
+
 function renderAllPlotly(){
   renderPlotlyOverview();
   renderPlotlyValuation();
@@ -790,6 +866,10 @@ function renderAllPlotly(){
   renderPlotlyDecompCap(_curSectors());
   renderPlotlyDecompNav(_curSectors());
   renderPlotlyCycle();
+  if(_perChartsInited){
+    const{labels,datasets}=_buildSectorTimeSeries(s=>s.per);
+    _renderPlotlyPerCharts(labels,datasets);
+  }
 }
 
 // A-7: イベント縦線プラグイン（Chart.js）

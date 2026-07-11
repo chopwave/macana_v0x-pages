@@ -533,5 +533,11 @@ function refreshChartColors(){
   _upd(charts.decompNav,tick,label);
   _upd(charts.decompCapLine,tick,tick);
   _upd(charts.decompNavLine,tick,tick);
+  _upd(charts.perTrend,tick,amber,(_,s)=>{
+    if(s?.y?.title) s.y.title.color=tick;
+  });
+  _upd(charts.perSector,tick,tick,(_,s)=>{
+    if(s?.y?.title) s.y.title.color=tick;
+  });
 }
 
