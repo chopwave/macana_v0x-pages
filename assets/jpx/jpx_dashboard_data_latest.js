@@ -1,5 +1,5 @@
 window.JPX_DASHBOARD_DATA = {
-  "generated_at": "2026-10-12T13:05:09",
+  "generated_at": "2026-10-12T13:23:18",
   "latest_yyyymm": "202609",
   "months": [
     "2020/01",
