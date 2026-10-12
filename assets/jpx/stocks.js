@@ -303,6 +303,9 @@ let _slSearchVal = '';
 let _slMktFilter = 'all';
 let _slScaleFilter = 'all';
 let _slRows = [];  // フィルター前の全行キャッシュ
+let _slPage = 1;
+let _slPageSize = 50;
+let _slFilteredCount = 0;
 
 function initStockList() {
   if (_slInited) return;
@@ -341,6 +344,7 @@ function _slMakePill(label, sector) {
   _slSetPillActive(pill, sector === _slSector || (sector === null && _slSector === null));
   pill.addEventListener('click', () => {
     _slSector = sector;
+    _slPage = 1;
     document.querySelectorAll('#slSectorPills span').forEach(p => {
       _slSetPillActive(p, p.dataset.sector === (sector || ''));
     });
@@ -359,6 +363,7 @@ function filterStockList() {
   _slSearchVal = (document.getElementById('slSearch')?.value || '').toLowerCase();
   _slMktFilter = document.getElementById('slMktSel')?.value || 'all';
   _slScaleFilter = document.getElementById('slScaleSel')?.value || 'all';
+  _slPage = 1;
   _slRenderTable();
 }
 
@@ -369,6 +374,21 @@ function slSort(key) {
     _slSortState.key = key;
     _slSortState.asc = true;
   }
+  _slPage = 1;
+  _slRenderTable();
+}
+
+function changeStockListPageSize(value) {
+  const size = parseInt(value, 10);
+  if (![50, 100, 300].includes(size)) return;
+  _slPageSize = size;
+  _slPage = 1;
+  _slRenderTable();
+}
+
+function changeStockListPage(delta) {
+  const pageCount = Math.max(1, Math.ceil(_slFilteredCount / _slPageSize));
+  _slPage = Math.max(1, Math.min(pageCount, _slPage + delta));
   _slRenderTable();
 }
 
@@ -409,6 +429,19 @@ function _slRenderTable() {
   // バッジ更新
   const badge = document.getElementById('nb-stocklist');
   if (badge) badge.textContent = rows.length || '';
+  _slFilteredCount = rows.length;
+  const pageCount = Math.max(1, Math.ceil(rows.length / _slPageSize));
+  _slPage = Math.min(_slPage, pageCount);
+  const start = rows.length ? (_slPage - 1) * _slPageSize : 0;
+  const pageRows = rows.slice(start, start + _slPageSize);
+  const pageStatus = document.getElementById('slPageStatus');
+  const prevButton = document.getElementById('slPrevPage');
+  const nextButton = document.getElementById('slNextPage');
+  if (pageStatus) pageStatus.textContent = rows.length
+    ? `${(start + 1).toLocaleString()}–${Math.min(start + _slPageSize, rows.length).toLocaleString()} / ${rows.length.toLocaleString()}件（${_slPage} / ${pageCount}ページ）`
+    : '0件';
+  if (prevButton) prevButton.disabled = _slPage <= 1 || rows.length === 0;
+  if (nextButton) nextButton.disabled = _slPage >= pageCount || rows.length === 0;
 
   if (rows.length === 0) {
     tbody.innerHTML = '';
@@ -419,7 +452,7 @@ function _slRenderTable() {
   if (emptyEl) emptyEl.style.display = 'none';
   if (countEl) countEl.textContent = `${rows.length.toLocaleString()} 銘柄`;
 
-  tbody.innerHTML = rows.map(r => _slRow(r)).join('');
+  tbody.innerHTML = pageRows.map(r => _slRow(r)).join('');
 }
 
 function _slRow(r) {

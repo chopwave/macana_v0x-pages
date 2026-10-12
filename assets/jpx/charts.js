@@ -999,7 +999,10 @@ function initCharts(){
       {label:'純資産（BPS）成長',data:dcNA,backgroundColor:'rgba(41,201,154,.7)',borderRadius:2,stack:'s'},
       {label:'PBR倍率変化',data:dcPBR,backgroundColor:'rgba(91,141,246,.7)',borderRadius:2,stack:'s'}]},
     options:{indexAxis:'y',...GC,
-      plugins:{title:chartTitle('時価総額成長要因分解'),tooltip:{callbacks:{label:c=>ttLabel(c.dataset.label,c.parsed.x,dcReal?'%':'x',dcReal?0:2)}},emptyState:{display:true,text:'要因分解データなし'}},
+      plugins:{title:chartTitle('時価総額成長要因分解'),
+        legend:{display:true,position:'top',labels:{color:chartLabelColor(),font:{size:10},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{label:c=>ttLabel(c.dataset.label,c.parsed.x,dcReal?'%':'x',dcReal?0:2)}},
+        emptyState:{display:true,text:'要因分解データなし'}},
       scales:{x:{title:{display:true,text:dcReal?'寄与度（%）':'寄与度（倍）',color:chartTickColor(),font:{size:10}},stacked:true,ticks:{color:chartTickColor(),font:{size:10},callback:dcFmt},grid:{color:chartGridColor()}},
         y:{stacked:true,ticks:{color:chartLabelColor(),font:{size:9}},grid:{display:false}}}}});
 

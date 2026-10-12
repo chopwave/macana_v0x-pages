@@ -1310,6 +1310,18 @@
       </div>
     </div>
     <div id="slSectorPills" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px"></div>
+    <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <label for="slPageSize" style="font-size:11px;color:var(--muted)">表示件数</label>
+      <select id="slPageSize" onchange="changeStockListPageSize(this.value)"
+        style="padding:5px 8px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:11px">
+        <option value="50" selected>50行</option>
+        <option value="100">100行</option>
+        <option value="300">300行</option>
+      </select>
+      <span id="slPageStatus" aria-live="polite" style="font-size:11px;color:var(--muted);min-width:170px;text-align:center"></span>
+      <button id="slPrevPage" class="tb-btn" type="button" onclick="changeStockListPage(-1)" aria-label="前のページ">前へ</button>
+      <button id="slNextPage" class="tb-btn" type="button" onclick="changeStockListPage(1)" aria-label="次のページ">次へ</button>
+    </div>
   </div>
   <div class="card" style="overflow-x:auto">
     <table style="width:100%;border-collapse:collapse;font-size:11px">
@@ -1440,7 +1452,7 @@
 </div>
 
 
-<script src="./assets/jpx/member_access.js?v=members-v2"></script>
+<script src="./assets/jpx/member_access.js?v=members-v3"></script>
 
 
 <!-- B-4: セクター詳細ダイアログ -->
