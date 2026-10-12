@@ -518,7 +518,7 @@ function renderCycleTheory(zScores){
   });
 }
 
-window.addEventListener('load',()=>{
+window.addEventListener('macana-ready',()=>{
   initTheme();
   updateThemePill();
   populateYmOptions();

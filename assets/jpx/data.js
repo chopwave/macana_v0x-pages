@@ -407,61 +407,9 @@ function _sampleStocksFromStockList(stockList){
   };
 }
 const STOCKS=DASHBOARD_DATA?.stocks || _sampleStocksFromStockList(SAMPLE_STOCK_LIST);
-// 有償会員アクセス制御
-// static site のため完全秘匿はできないが、bundle には平文キーを持たせず
-// PBKDF2 ハッシュ比較 + sessionStorage 保存に寄せる。
-const MEMBER_AUTH_STORAGE_KEY='jpxMemberAuthToken';
-const MEMBER_KEY_HASH=DASHBOARD_DATA?.member_key_hash || '';
-const MEMBER_KEY_SALT=DASHBOARD_DATA?.member_key_salt || 'jpx-v6-member-auth';
-const MEMBER_KEY_ITERATIONS=Number(DASHBOARD_DATA?.member_key_iterations || 120000);
-const MEMBER_KEY=DASHBOARD_DATA ? (DASHBOARD_DATA.member_key || '') : 'demo';
-
-function _memberStorage(){
-  return window.sessionStorage;
-}
-function _legacyMemberStorage(){
-  return window.localStorage;
-}
-function _readMemberToken(){
-  try{
-    const current=_memberStorage().getItem(MEMBER_AUTH_STORAGE_KEY);
-    if(current) return current;
-  }catch(_e){}
-  try{
-    const legacy=_legacyMemberStorage().getItem('jpxMemberAuth');
-    if(legacy===MEMBER_KEY || legacy===MEMBER_KEY_HASH){
-      _legacyMemberStorage().removeItem('jpxMemberAuth');
-      if(legacy===MEMBER_KEY_HASH){
-        _memberStorage().setItem(MEMBER_AUTH_STORAGE_KEY, legacy);
-        return legacy;
-      }
-    }
-  }catch(_e){}
-  return null;
-}
+// 会員資格は認証APIが確認し、実データはログイン後にだけ取得する。
 function isMemberAuthorized(){
-  if(!DASHBOARD_DATA) return false;
-  if(MEMBER_KEY_HASH){
-    return _readMemberToken()===MEMBER_KEY_HASH;
-  }
-  if(!MEMBER_KEY) return false;
-  return _readMemberToken()===MEMBER_KEY;
-}
-async function _deriveMemberKeyHash(input){
-  const enc=new TextEncoder();
-  const keyMaterial=await crypto.subtle.importKey(
-    'raw',
-    enc.encode(input),
-    'PBKDF2',
-    false,
-    ['deriveBits']
-  );
-  const bits=await crypto.subtle.deriveBits(
-    {name:'PBKDF2',salt:enc.encode(MEMBER_KEY_SALT),iterations:MEMBER_KEY_ITERATIONS,hash:'SHA-256'},
-    keyMaterial,
-    256
-  );
-  return Array.from(new Uint8Array(bits)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return window.MacanaMembers?.isAuthorized() === true;
 }
 
 // ────── state ──────

@@ -170,7 +170,7 @@ function updateDataModePill(){
     el.classList.add('pill-green');
     el.style.cursor='pointer';
     el.title='クリックでサンプルデータに切り替え';
-  } else if(window.JPX_DASHBOARD_DATA){
+  } else if(window.JPX_DASHBOARD_PUBLIC_CONFIG){
     el.textContent=member?'実データ ⇌':'🔒 実データへ';
     el.classList.add('pill-amber');
     el.style.cursor='pointer';
@@ -188,8 +188,7 @@ function updateSampleModeBanner(){
   el.style.display=!DASHBOARD_DATA?'block':'none';
 }
 function toggleDataMode(){
-  if(!window.JPX_DASHBOARD_DATA) return;
-  if(_forceSample && typeof _isMember==='function' && !_isMember()){
+  if(typeof _isMember==='function' && !_isMember()){
     if(typeof showMemberLogin==='function') showMemberLogin();
     return;
   }

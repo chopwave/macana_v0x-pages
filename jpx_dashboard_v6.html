@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="./assets/jpx/jpx_dashboard_data_latest.js"></script>
+<script src="./assets/jpx/jpx_dashboard_data_latest.js?v=members-v1"></script>
 <link rel="stylesheet" href="./assets/jpx/dashboard.css">
 </head>
 <body>
@@ -154,7 +154,7 @@
       <div>
         <div style="font-weight:500;color:var(--accent);margin-bottom:4px">🔒 有償会員（メンバーシップ）限定機能</div>
         <div style="color:var(--muted)">
-          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>、<strong>チームメモ</strong>。右上の <strong>🔒 会員ログイン</strong> ボタンからパスキーを入力することでロックが解除されます。
+          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>、<strong>チームメモ</strong>。右上の <strong>🔒 会員ログイン</strong> ボタンからメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
         </div>
       </div>
     </div>
@@ -348,7 +348,7 @@
       </div>
       <div>
         <div style="font-weight:500;color:var(--text);margin-bottom:4px">実データ（有償会員）</div>
-        <div style="color:var(--muted)">スクリーニング結果（全銘柄・スコア・ランク・ステップ通過）は実データです。有償会員パスキーでログインすると閲覧できます。銘柄一覧も全上場銘柄が表示されます。</div>
+        <div style="color:var(--muted)">スクリーニング結果（全銘柄・スコア・ランク・ステップ通過）は実データです。有効な会員資格でログインすると閲覧できます。銘柄一覧も全上場銘柄が表示されます。</div>
       </div>
       <div>
         <div style="font-weight:500;color:var(--text);margin-bottom:4px">対象業種・指標</div>
@@ -1428,15 +1428,7 @@
 </div>
 
 
-<script src="./assets/jpx/data.js?v=20260419"></script>
-<script src="./assets/jpx/overview.js?v=20260419"></script>
-<script src="./assets/jpx/heatmap.js?v=20260419"></script>
-<script src="./assets/jpx/charts.js?v=20260419"></script>
-<script src="./assets/jpx/notes.js?v=20260419"></script>
-<script src="./assets/jpx/features.js?v=20260419"></script>
-<script src="./assets/jpx/navigation.js?v=20260419"></script>
-<script src="./assets/jpx/cycle.js?v=20260419"></script>
-<script src="./assets/jpx/stocks.js?v=20260419"></script>
+<script src="./assets/jpx/member_access.js?v=members-v1"></script>
 
 
 <!-- B-4: セクター詳細ダイアログ -->
