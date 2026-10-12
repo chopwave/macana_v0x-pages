@@ -6,6 +6,9 @@ let _stocksSearchVal = '';
 let _stocksRankFilter = 'all';
 let _stocksStepMin = 0;
 let _stocksCarryover = '';
+let _stocksPage = 1;
+let _stocksPageSize = 50;
+let _stocksFilteredCount = 0;
 
 // ── 会員認証 ──────────────────────────────────────────
 function _isMember() {
@@ -64,6 +67,7 @@ function _applyEvalFilters({ sector = null, search = '', carryover = '' } = {}) 
   _stocksRankFilter = 'all';
   _stocksStepMin = 0;
   _stocksCarryover = carryover || '';
+  _stocksPage = 1;
 
   const searchEl = document.getElementById('stocksSearch');
   const rankEl = document.getElementById('stocksRankSel');
@@ -124,6 +128,7 @@ function _makePill(label, sector) {
   pill.addEventListener('click', () => {
     _selectedSector = sector;
     _stocksCarryover = '';
+    _stocksPage = 1;
     document.querySelectorAll('#stocksSectorPills span').forEach(p => {
       _setPillActive(p, p.dataset.sector === (sector || ''));
     });
@@ -145,6 +150,7 @@ function filterStocksTable() {
   _stocksRankFilter = document.getElementById('stocksRankSel')?.value || 'all';
   _stocksStepMin = parseInt(document.getElementById('stocksStepSel')?.value || '0', 10);
   _stocksCarryover = '';
+  _stocksPage = 1;
   _updateCarryoverHint();
   _renderStocksTable();
 }
@@ -156,6 +162,20 @@ function _stocksSort(key) {
     _stocksSortState.key = key;
     _stocksSortState.asc = key === 'code' || key === 'name';
   }
+  _renderStocksTable();
+}
+
+function changeStocksPageSize(value) {
+  const size = parseInt(value, 10);
+  if (![50, 100, 300].includes(size)) return;
+  _stocksPageSize = size;
+  _stocksPage = 1;
+  _renderStocksTable();
+}
+
+function changeStocksPage(delta) {
+  const pageCount = Math.max(1, Math.ceil(_stocksFilteredCount / _stocksPageSize));
+  _stocksPage = Math.max(1, Math.min(pageCount, _stocksPage + delta));
   _renderStocksTable();
 }
 
@@ -202,6 +222,19 @@ function _renderStocksTable() {
 
   const badge = document.getElementById('nb-eval');
   if (badge) badge.textContent = rows.length || '';
+  _stocksFilteredCount = rows.length;
+  const pageCount = Math.max(1, Math.ceil(rows.length / _stocksPageSize));
+  _stocksPage = Math.min(_stocksPage, pageCount);
+  const start = rows.length ? (_stocksPage - 1) * _stocksPageSize : 0;
+  const pageRows = rows.slice(start, start + _stocksPageSize);
+  const pageStatus = document.getElementById('stocksPageStatus');
+  const prevButton = document.getElementById('stocksPrevPage');
+  const nextButton = document.getElementById('stocksNextPage');
+  if (pageStatus) pageStatus.textContent = rows.length
+    ? `${(start + 1).toLocaleString()}–${Math.min(start + _stocksPageSize, rows.length).toLocaleString()} / ${rows.length.toLocaleString()}件（${_stocksPage} / ${pageCount}ページ）`
+    : '0件';
+  if (prevButton) prevButton.disabled = _stocksPage <= 1 || rows.length === 0;
+  if (nextButton) nextButton.disabled = _stocksPage >= pageCount || rows.length === 0;
 
   if (rows.length === 0) {
     tbody.innerHTML = '';
@@ -209,7 +242,7 @@ function _renderStocksTable() {
     return;
   }
   if (emptyEl) emptyEl.style.display = 'none';
-  tbody.innerHTML = rows.map(r => _stocksRow(r)).join('');
+  tbody.innerHTML = pageRows.map(r => _stocksRow(r)).join('');
 }
 
 function _stocksRow(r) {
@@ -221,8 +254,9 @@ function _stocksRow(r) {
     : `<span style="color:var(--border2);font-size:10px" title="${hint || '有償会員限定の情報です'}">🔒</span>`;
 
   // スコア
+  const score = Number(r.score);
   const scoreCell = _lock(
-    `<span style="font-family:var(--mono);color:var(--accent)">${r.score ?? '–'}</span>`,
+    `<span style="font-family:var(--mono);color:var(--accent)">${r.score != null && Number.isFinite(score) ? score.toFixed(1) : '–'}</span>`,
     '総合スコアは有償会員限定です'
   );
 
