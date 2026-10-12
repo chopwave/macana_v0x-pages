@@ -148,7 +148,7 @@
     for (const file of ['data', 'overview', 'heatmap', 'charts', 'notes', 'features', 'navigation', 'cycle', 'stocks']) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = './assets/jpx/' + file + '.js?v=members-v1';
+        script.src = './assets/jpx/' + file + '.js?v=members-v2';
         script.onload = resolve;
         script.onerror = reject;
         document.body.appendChild(script);
