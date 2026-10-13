@@ -28,9 +28,11 @@
     if (!response.ok) throw new Error('認証できませんでした。入力内容を確認し、時間をおいてお試しください。');
     return response.json();
   }
-  async function loadMemberData(token) {
+  async function loadMemberData(token, visit = false) {
+    const headers = {apikey: config.publishable_key, Authorization: 'Bearer ' + token};
+    if (visit) headers['X-Macana-Visit'] = 'open';  // counted as a dashboard open; rechecks are not
     const response = await fetch(config.url + '/functions/v1/member-dashboard', {
-      headers: {apikey: config.publishable_key, Authorization: 'Bearer ' + token},
+      headers,
       cache: 'no-store', signal: AbortSignal.timeout(20000),
     });
     if (response.status === 401) throw new Error('ログインの有効期限が切れました。再ログインしてください。');
@@ -133,7 +135,7 @@
     session = readSession();
     if (!configured() || !session) return;
     try {
-      const data = await loadMemberData(session.access_token);
+      const data = await loadMemberData(session.access_token, true);
       if (new URLSearchParams(location.search).get('mode') !== 'sample') window.JPX_DASHBOARD_DATA = data;
       authorized = true;
       // Recheck revocation while a tab remains open; data is never persisted to storage.
@@ -148,7 +150,7 @@
     for (const file of ['data', 'overview', 'heatmap', 'charts', 'notes', 'features', 'navigation', 'cycle', 'stocks']) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = './assets/jpx/' + file + '.js?v=members-v3';
+        script.src = './assets/jpx/' + file + '.js?v=members-v4';
         script.onload = resolve;
         script.onerror = reject;
         document.body.appendChild(script);
