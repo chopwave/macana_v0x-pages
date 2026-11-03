@@ -477,7 +477,11 @@ function showSectorDetail(s){
   const row=_pbr1m.matrix?.[(_pbr1m.sectors||[]).indexOf(s.n)]||null;
   const months=_pbr1m.months||[];
   const endIdx=_activeYm&&months.includes(_activeYm)?months.indexOf(_activeYm):months.length-1;
-  const points=(row||[]).map((v,i)=>({m:months[i],v})).slice(0,endIdx+1).filter(p=>p.v!=null).slice(-12);
+  // JPX公表値は0.1倍刻みなので、月次スナップショットの pbr_fine（小数3桁）があれば優先する
+  const hist=DASHBOARD_DATA?.sectors_history;
+  const fineAt=m=>hist?.[m.replace('/','')]?.find(x=>x.n===s.n)?.pbr_fine;
+  const points=(row||[]).map((v,i)=>({m:months[i],v:fineAt(months[i])??v}))
+    .slice(0,endIdx+1).filter(p=>p.v!=null).slice(-12);
   const sparkEl=document.getElementById('dlgSparkline');
   if(points.length>=2){
     const vals=points.map(p=>p.v);
