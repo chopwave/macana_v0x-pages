@@ -217,14 +217,20 @@ function phaseRecReason(cat){
   if(rec==='SELL') return `${label} は現在フェーズ ${_activePhase} では逆風になりやすく、慎重評価です。`;
   return `${label} は現在フェーズ ${_activePhase} では中立圏で、個別材料の確認が必要です。`;
 }
+// ツールチップ用の全文。画面上はカテゴリ共通の文を1回だけ出し、各行は phaseRecZShort を使う。
 function phaseRecDetail(sector,z){
-  const catLabel=CAT_LBL[sector.cat]||'カテゴリ';
   const phaseText=phaseRecReason(sector.cat);
   const zText=z==null?'同フェーズ比較データは未取得です。':
     z<=-1?`同フェーズ比では Z=${fmtNum(z,2)} と割安側です。`:
     z>=1?`同フェーズ比では Z=${fmtNum(z,2)} と割高側です。`:
     `同フェーズ比では Z=${fmtNum(z,2)} で中立圏です。`;
-  return `${catLabel}。${phaseText} ${zText}`;
+  return `${phaseText} ${zText}`;
+}
+// 業種ごとに異なる部分（同フェーズ比の水準）だけを短く返す
+function phaseRecZShort(z){
+  if(z==null) return '同フェーズ比データなし';
+  const lvl=z<=-1?'割安側':z>=1?'割高側':'中立';
+  return `${lvl}（Z=${fmtNum(z,2)}）`;
 }
 function finalScore(s){
   const phase={'BUY':2,'HOLD':0,'SELL':-2}[phaseRec(s.cat)];
@@ -275,7 +281,7 @@ function renderCycleSectors(zScores){
   if(recWhy){
     const buyCats=(phaseMap?.BUY||[]).map(c=>CAT_LBL[c]||c).join('・')||'–';
     const sellCats=(phaseMap?.SELL||[]).map(c=>CAT_LBL[c]||c).join('・')||'–';
-    recWhy.innerHTML=`<strong>推奨の見方：</strong>${_activePhase} では <strong style="color:var(--green)">${buyCats}</strong> が追い風、<strong style="color:var(--red)">${sellCats}</strong> が逆風です。各行ではさらに同フェーズ比の Z スコアも加味しています。`;
+    recWhy.innerHTML=`<strong>推奨の見方：</strong>${_activePhase} では <strong style="color:var(--green)">${buyCats}</strong> が追い風、<strong style="color:var(--red)">${sellCats}</strong> が逆風、それ以外は中立です。BUY / HOLD / SELL はカテゴリで決まり、各行の「同フェーズ比」は業種ごとの割安・割高（Z スコア）を示します。`;
   }
   // カード副題をフェーズ連動で更新
   const buyMeta=document.getElementById('recBuyMeta');
@@ -285,22 +291,26 @@ function renderCycleSectors(zScores){
   // ② BUY/HOLD/SELL推奨リスト
   const byRec={BUY:[],HOLD:[],SELL:[]};
   src.forEach(s=>{byRec[phaseRec(s.cat)].push(s);});
-  const renderRecList=(elId,list,color)=>{
+  // カテゴリとフェーズの相性はカードごとに1回だけ書き、各行は業種ごとの違い（Z）だけにする
+  const renderRecList=(elId,list,color,lead)=>{
     const el=document.getElementById(elId);
     if(!el) return;
-    el.innerHTML=list.map(s=>{
-      const detail=phaseRecDetail(s,zMap.get(s.n)?.z);
+    el.innerHTML=(lead?`<div class="rec-lead">${lead}</div>`:'')+list.map(s=>{
+      const z=zMap.get(s.n)?.z;
       return `
-      <div class="rec-row" title="${detail}">
+      <div class="rec-row" title="${phaseRecDetail(s,z)}">
         <span class="rec-name">${s.n}</span>
         <span class="rec-cat"><span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]}">${CAT_LBL[s.cat]}</span></span>
         <span class="rec-pbr" style="color:${color}">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</span>
-        <span class="rec-detail">${detail}</span>
+        <span class="rec-detail">${phaseRecZShort(z)}</span>
       </div>`;
     }).join('');
   };
-  renderRecList('recBuyList',byRec.BUY,'var(--green)');
-  renderRecList('recSellList',byRec.SELL,'var(--red)');
+  const catsOf=rec=>(phaseMap?.[rec]||[]).map(c=>CAT_LBL[c]||c).join('・');
+  renderRecList('recBuyList',byRec.BUY,'var(--green)',
+    catsOf('BUY')&&`${catsOf('BUY')} は ${_activePhase} と相性が良く、相対的に追い風です。`);
+  renderRecList('recSellList',byRec.SELL,'var(--red)',
+    catsOf('SELL')&&`${catsOf('SELL')} は ${_activePhase} では逆風になりやすく、慎重に見ます。`);
   const recBody=document.getElementById('recBody');
   if(recBody) recBody.innerHTML=src.map(s=>{
     const r=phaseRec(s.cat);
@@ -312,7 +322,7 @@ function renderCycleSectors(zScores){
       <td><span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]}">${CAT_LBL[s.cat]}</span></td>
       <td style="font-family:var(--mono)">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</td>
       <td><span class="chip" style="font-size:10px;padding:1px 8px;border-radius:99px;${r==='BUY'?'background:rgba(41,201,154,.15);color:var(--green)':r==='SELL'?'background:rgba(224,84,84,.12);color:var(--red)':'background:rgba(107,116,145,.12);color:var(--muted)'}">${r}</span></td>
-      <td style="color:var(--muted);font-size:10px;line-height:1.6;min-width:220px">${reason}</td>
+      <td style="color:var(--muted);font-size:10px;line-height:1.6;white-space:nowrap">${phaseRecZShort(z)}</td>
     </tr>`;
   }).join('');
   // ③ Zスコアチャート更新

@@ -472,13 +472,22 @@ function showSectorDetail(s){
   document.getElementById('dlgPer').innerHTML=s.per!=null?`${s.per.toFixed(1)}<span style="font-size:11px;color:var(--muted)">x</span>`:'–';
   document.getElementById('dlgCap').innerHTML=s.cap!=null?`${s.cap.toFixed(1)}<span style="font-size:11px;color:var(--muted)">兆</span>`:'–';
   document.getElementById('dlgDy').innerHTML=s.dy!=null?`${s.dy.toFixed(1)}<span style="font-size:11px;color:var(--muted)">%</span>`:'–';
-  // PBR 推移スパークライン
-  const idx=SECTORS.findIndex(x=>x.n===s.n);
+  // PBR 推移スパークライン（業種名で行を引き、選択中の年月までの直近12か月）
   const _pbr1m=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
-  const pbrHistory=_pbr1m.matrix?.[idx]||null;
-  document.getElementById('dlgSparkline').innerHTML=pbrHistory
-    ?_sparkSvg(pbrHistory,'var(--accent)',180,24)
-    :'<span style="font-size:10px;color:var(--muted)">（実データ接続時に表示）</span>';
+  const row=_pbr1m.matrix?.[(_pbr1m.sectors||[]).indexOf(s.n)]||null;
+  const months=_pbr1m.months||[];
+  const endIdx=_activeYm&&months.includes(_activeYm)?months.indexOf(_activeYm):months.length-1;
+  const points=(row||[]).map((v,i)=>({m:months[i],v})).slice(0,endIdx+1).filter(p=>p.v!=null).slice(-12);
+  const sparkEl=document.getElementById('dlgSparkline');
+  if(points.length>=2){
+    const vals=points.map(p=>p.v);
+    const range=`${points[0].m}–${points[points.length-1].m}　${Math.min(...vals).toFixed(2)}〜${Math.max(...vals).toFixed(2)}倍`;
+    const sample=DASHBOARD_DATA?.pbr1?'':'<div style="font-size:10px;color:var(--muted);margin-top:2px">サンプル：市場全体の動きを当てはめた線です（業種ごとの実績はログイン後に表示）</div>';
+    sparkEl.innerHTML=_sparkSvg(vals,'var(--accent)',180,24)
+      +`<div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:var(--mono)">${range}</div>`+sample;
+  } else {
+    sparkEl.innerHTML='<span style="font-size:10px;color:var(--muted)">（この業種の推移データなし）</span>';
+  }
   document.getElementById('dlgSignal').innerHTML=`<span class="chip ${sig.cls}">${sig.txt||'–'}</span>`;
   document.getElementById('sectorDlg').showModal();
 }

@@ -264,6 +264,7 @@ function _updateCdShareBar(share, ymKey){
 function _onYmScatter(yyyymm,ym){
   const sh=DASHBOARD_DATA?.sectors_history?.[yyyymm]||SAMPLE_SECTORS_HISTORY[yyyymm]||null;
   _activeSectors=sh&&sh.length?sh:null;
+  _activeYm=ym;
   const src=_curSectors();
 
   // PBRがnullの月（mart データギャップ期間）はSECTORSからフォールバック

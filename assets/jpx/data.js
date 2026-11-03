@@ -135,6 +135,7 @@ function _calcSprData(sectors){
 const SPR_DATA=_calcSprData(SECTORS);
 // 選択月セクター（null=最新月）
 let _activeSectors=null;
+let _activeYm=null; // 年月スライダーで選択中の月（YYYY/MM）。未選択は最新月
 function _curSectors(){return _activeSectors||SECTORS;}
 const PBR_TS=DASHBOARD_DATA?.pbr_ts || SAMPLE_PBR_TS;
 const PER_TS=DASHBOARD_DATA?.per_ts || SAMPLE_PER_TS;
