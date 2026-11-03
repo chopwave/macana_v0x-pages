@@ -80,25 +80,21 @@
       dialog.appendChild(status);
       const join = document.createElement('p');
       join.className = 'plan-cta';
-      join.textContent = 'まだ会員でない方：実データはnoteの「プランC」（月2,200円）で利用できます。登録と利用にはメールアドレスが必要です。';
-      const joinLink = document.createElement('a');
-      joinLink.className = 'plan-link';
-      joinLink.dataset.planPlace = 'login_dialog';
-      joinLink.href = 'https://note.com/chopwave/membership/join';
-      joinLink.target = '_blank';
-      joinLink.rel = 'noopener';
-      joinLink.textContent = 'プランを見る';
-      join.appendChild(joinLink);
-      join.append('（参加後、note の');
-      const contactLink = document.createElement('a');
-      contactLink.className = 'plan-link';
-      contactLink.dataset.trackEvent = 'event/registration_contact/login_dialog';
-      contactLink.href = 'https://note.com/chopwave/message';
-      contactLink.target = '_blank';
-      contactLink.rel = 'noopener';
-      contactLink.textContent = 'クリエイターへのお問い合わせ';
-      join.appendChild(contactLink);
-      join.append('からログインに使うメールアドレスをお知らせください。登録には1～2営業日かかります）');
+      // 料金・登録方法は ReadMe First の「無料 / 有償会員の違い」にまとめ、ここからはリンクだけにする
+      join.append('まだ会員でない方は ');
+      const readmeLink = document.createElement('a');
+      readmeLink.className = 'plan-link';
+      readmeLink.dataset.trackEvent = 'event/readme_membership/login_dialog';
+      readmeLink.href = '#readmeMembership';
+      readmeLink.textContent = 'ReadMe First の「無料 / 有償会員の違い」';
+      readmeLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        dialog.close();
+        if (typeof goto === 'function') goto('readme', document.querySelector('.nav-item[onclick*="readme"]'));
+        setTimeout(() => document.getElementById('readmeMembership')?.scrollIntoView({behavior: 'smooth', block: 'start'}), 50);
+      });
+      join.appendChild(readmeLink);
+      join.append(' をご覧ください。');
       dialog.appendChild(join);
       const buttons = [['コード送信', sendCode], ['ログイン', verifyCode], ['ログアウト', logout], ['閉じる', () => dialog.close()]];
       for (const [label, handler] of buttons) {
@@ -175,7 +171,7 @@
     for (const file of ['data', 'overview', 'heatmap', 'charts', 'notes', 'features', 'navigation', 'cycle', 'stocks']) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = './assets/jpx/' + file + '.js?v=members-v13';
+        script.src = './assets/jpx/' + file + '.js?v=members-v14';
         script.onload = resolve;
         script.onerror = reject;
         document.body.appendChild(script);
