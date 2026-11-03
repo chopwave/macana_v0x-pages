@@ -541,6 +541,7 @@ window.addEventListener('macana-ready',()=>{
   if(chartParam==='chartjs'||chartParam==='plotly') setChartMode(chartParam);
   else setChartMode('chartjs');
   updateChartModePill();
+  updateChgBasisUI();
   _restoreFilterUrl();
   const ymParam=getUrlParam('ym');
   const ymSel=document.getElementById('ymSel');

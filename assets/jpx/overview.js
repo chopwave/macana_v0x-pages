@@ -135,7 +135,9 @@ function _sortScreen(key){
   document.querySelectorAll('#screenThead th[data-skey]').forEach(th=>{
     const k=th.dataset.skey;
     const arrow=k===_screenSort.key?(_screenSort.asc?' ▲':' ▼'):'';
-    th.textContent=th.textContent.replace(/ [▲▼]$/,'')+arrow;
+    // 見出しの文字部分だけを書き換え、説明アイコン（i）は残す
+    const label=[...th.childNodes].find(n=>n.nodeType===3);
+    if(label) label.textContent=label.textContent.replace(/ [▲▼]$/,'')+arrow;
   });
   renderScreen();
 }

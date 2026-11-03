@@ -54,6 +54,7 @@
   <span id="generatedAt" style="font-size:10px;color:var(--hint);font-family:var(--mono);white-space:nowrap"></span>
   <span class="pill-toggle" id="themePill" onclick="toggleTheme()" title="テーマ切替（Dark / Light）">Dark ⇌</span>
   <span class="pill-toggle" id="chartModePill" onclick="toggleChartModePill()" title="チャートモード切替（Chart.js / Plotly）">Chart.js ⇌</span>
+  <span class="pill-toggle" id="chgBasisPill" onclick="toggleChgBasis()" title="PBR変化の比較期間を切替（前年同月比 / 前月比）" style="display:none">前年比 ⇌</span>
   <div class="tb-right">
     <button class="tb-btn" id="csvExportBtn" onclick="exportCSV()" title="CSV出力は有償会員向けです" data-tip="CSV出力は有償会員向けです。&#10;会員ログイン後に利用できます。" data-tip-pos="bottom">🔒 CSV出力</button>
     <button class="tb-btn" onclick="window.print()" title="現在表示中のページを印刷">印刷</button>
@@ -435,7 +436,7 @@
         <th onclick="_sortScreen('cap')" style="cursor:pointer" data-skey="cap">時価総額</th>
         <th onclick="_sortScreen('cos')" style="cursor:pointer" data-skey="cos">上場社数</th>
         <th onclick="_sortScreen('dy')" style="cursor:pointer" data-skey="dy">配当利回り</th>
-        <th>シグナル<span class="info-icon" data-tip="強いBuy: PBR&lt;0.6x かつ 前年同月比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前年同月比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前年同月比&lt;0 または 前年同月比&gt;+0.8x" data-tip-pos="bottom">i</span></th><th>アクション</th>
+        <th>シグナル<span class="info-icon chg-basis-tip" data-tip="強いBuy: PBR&lt;0.6x かつ 前年同月比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前年同月比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前年同月比&lt;0 または 前年同月比&gt;+0.8x" data-tip-pos="bottom">i</span></th><th>アクション</th>
       </tr></thead>
       <tbody id="screenBody"></tbody>
     </table>
@@ -481,15 +482,15 @@
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px" id="ovSigRow">
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-g" style="margin-right:4px">強いBuy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 0.6x（割安圏）&#10;・前年同月比 &gt; +0.2x（上昇トレンド）&#10;&#10;割安かつ改善中の最有力候補。">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-g" style="margin-right:4px">強いBuy候補</span>業種<span class="info-icon chg-basis-tip" data-tip="判定条件（AND）&#10;・PBR &lt; 0.6x（割安圏）&#10;・前年同月比 &gt; +0.2x（上昇トレンド）&#10;&#10;割安かつ改善中の最有力候補。">i</span></span></div>
       <div id="ovStrongBuy" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-b" style="margin-right:4px">Buy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 1.0x（1倍割れ）&#10;・前年同月比 &gt; +0.3x（上昇トレンド）&#10;&#10;東証改革期待と上昇勢いを兼ねた候補。">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-b" style="margin-right:4px">Buy候補</span>業種<span class="info-icon chg-basis-tip" data-tip="判定条件（AND）&#10;・PBR &lt; 1.0x（1倍割れ）&#10;・前年同月比 &gt; +0.3x（上昇トレンド）&#10;&#10;東証改革期待と上昇勢いを兼ねた候補。">i</span></span></div>
       <div id="ovBuy" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-r" style="margin-right:4px">注意</span>フラグ業種<span class="info-icon" data-tip="過熱注意: PBR &gt; 2.5x かつ 前年同月比 &lt; 0&#10;（割高で失速 → 利確・見送り検討）&#10;&#10;急騰注意: 前年同月比 &gt; +0.8x&#10;（短期急騰で過熱感 → 追いかけ禁物）">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-r" style="margin-right:4px">注意</span>フラグ業種<span class="info-icon chg-basis-tip" data-tip="過熱注意: PBR &gt; 2.5x かつ 前年同月比 &lt; 0&#10;（割高で失速 → 利確・見送り検討）&#10;&#10;急騰注意: 前年同月比 &gt; +0.8x&#10;（短期急騰で過熱感 → 追いかけ禁物）">i</span></span></div>
       <div id="ovCaution" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
   </div>
@@ -1441,7 +1442,7 @@
 
 
 <p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、開いた画面、主な操作（プラン案内・ログイン・CSV出力）、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
-<script src="./assets/jpx/member_access.js?v=members-v11"></script>
+<script src="./assets/jpx/member_access.js?v=members-v12"></script>
 <script src="./assets/jpx/analytics.js?v=analytics-v2"></script>
 
 

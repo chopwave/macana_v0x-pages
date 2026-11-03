@@ -196,7 +196,7 @@ function exportCSV(){
     return;
   }
   window.macanaTrack?.('event/csv_export');
-  const rows=[['業種','カテゴリ','加重PBR','PBR前年同月比','加重PER','時価総額(兆円)','上場社数','シグナル']];
+  const rows=[['業種','カテゴリ','加重PBR','PBR'+_CHG_BASIS_LABEL[_chgBasis],'加重PER','時価総額(兆円)','上場社数','シグナル']];
   _curSectors().forEach(s=>rows.push([s.n,CAT_LBL[s.cat],s.pbr,s.chg,s.per??'',s.cap,s.cos,signal(s).txt]));
   const csv=rows.map(r=>r.join(',')).join('\n');
   const a=document.createElement('a');

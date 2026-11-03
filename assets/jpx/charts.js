@@ -306,6 +306,37 @@ function updateChartModePill(){
   el.textContent=chartMode==='plotly'?'Plotly ⇌':'Chart.js ⇌';
   el.classList.toggle('pt-active',chartMode==='plotly');
 }
+// PBR変化の比較期間（前年同月比 / 前月比）。会員データの月次履歴があるときだけ切り替えられる
+function toggleChgBasis(){
+  if(!_CHG_ROWS.length) return;
+  _chgBasis=_chgBasis==='yoy'?'mom':'yoy';
+  try{localStorage.setItem('jpxChgBasis',_chgBasis);}catch(_e){}
+  try{const url=new URL(location.href);url.searchParams.set('chgbase',_chgBasis);history.replaceState(null,'',url.toString());}catch(_e){}
+  _applyChgBasis();
+  updateChgBasisUI();
+  const sel=document.getElementById('ymSel');
+  if(sel&&sel.value) onYm(sel.value);
+}
+function updateChgBasisUI(){
+  const el=document.getElementById('chgBasisPill');
+  if(el){
+    el.style.display=_CHG_ROWS.length?'':'none';
+    el.textContent=(_chgBasis==='mom'?'前月比':'前年比')+' ⇌';
+    el.classList.toggle('pt-active',_chgBasis==='mom');
+  }
+  // サンプル表示の変化は前月比で作られている（data.js の SAMPLE_SECTORS_HISTORY）
+  const basis=_CHG_ROWS.length?_chgBasis:'mom';
+  const label=_CHG_BASIS_LABEL[basis];
+  // 見出しは並べ替えで textContent ごと書き換わるので、文字部分だけを置き換える
+  const th=document.querySelector('#screenThead th[data-skey="chg"]');
+  const textNode=th&&[...th.childNodes].find(n=>n.nodeType===3);
+  if(textNode) textNode.textContent=textNode.textContent.replace(/前年同月比|前月比/,label);
+  const thTip=th?.querySelector('.info-icon');
+  if(thTip) thTip.dataset.tip=basis==='mom'
+    ?'前月末と比べたPBRの変化量（絶対値）。\n+0.10x = 先月より0.1倍上昇。\n▲は上昇、▼は下落を示す。'
+    :'1年前の同じ月と比べたPBRの変化量（絶対値）。\n+0.10x = 1年前より0.1倍上昇。\n▲は上昇、▼は下落を示す。';
+  document.querySelectorAll('.chg-basis-tip').forEach(e=>{e.dataset.tip=e.dataset.tip.replace(/前年同月比|前月比/g,label);});
+}
 // A-3: フィルター URL 同期
 function _syncFilterUrl(){
   try{

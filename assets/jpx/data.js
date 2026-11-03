@@ -122,27 +122,44 @@ const SAMPLE_DECOMP=(()=>{
     return {n:s.n,na,pbr,total:+(na+pbr).toFixed(3)};
   }).sort((a,b)=>Math.abs(b.total)-Math.abs(a.total));
 })();
-// JPX公表の業種PBRは小数1桁。業種行の pbr を pbr_fine（小数3桁）に置き換え、変化 chg とシグナル sig も
-// 細かい値で作り直す（chg は最新月・月次履歴とも前年同月比）。公表値は *_pub に残す。
+// JPX公表の業種PBRは小数1桁。業種行の pbr を pbr_fine（小数3桁）に置き換え、変化とシグナル sig も
+// 細かい値で作り直す。変化は前年同月比 chg_yoy と前月比 chg_mom の両方を持ち、chg には選択中の方を入れる。
+// 公表値は *_pub に残す。
+const _CHG_BASIS_LABEL={yoy:'前年同月比',mom:'前月比'};
+let _chgBasis=(()=>{
+  try{
+    const p=new URL(location.href).searchParams.get('chgbase');
+    if(p==='yoy'||p==='mom') return p;
+    return localStorage.getItem('jpxChgBasis')==='mom'?'mom':'yoy';
+  }catch(_e){return 'yoy';}
+})();
+const _CHG_ROWS=[];
 (()=>{
   const hist=DASHBOARD_DATA?.sectors_history;
   if(!hist) return;
   const fine=new Map();
   Object.entries(hist).forEach(([ym,list])=>(list||[]).forEach(s=>{if(s.pbr_fine!=null) fine.set(ym+'|'+s.n,s.pbr_fine);}));
   const yms=Object.keys(hist).sort();
-  const apply=(s,ym,priorYm)=>{
+  const yearAgo=ym=>String(+ym.slice(0,4)-1)+ym.slice(4);
+  const monthAgo=ym=>{const y=+ym.slice(0,4),m=+ym.slice(4);return m===1?`${y-1}12`:`${y}${String(m-1).padStart(2,'0')}`;};
+  const diff=(f,ym,s)=>{const p=fine.get(ym+'|'+s.n);return p==null?null:+(f-p).toFixed(3);};
+  const apply=(s,ym)=>{
     const f=fine.get(ym+'|'+s.n);
     if(f==null) return;
-    const p=priorYm?fine.get(priorYm+'|'+s.n):null;
-    Object.assign(s,{pbr_pub:s.pbr,chg_pub:s.chg,sig_pub:s.sig,pbr:f,pbr_fine:f});
-    if(p!=null) s.chg=+(f-p).toFixed(3);
+    Object.assign(s,{pbr_pub:s.pbr,chg_pub:s.chg,sig_pub:s.sig,pbr:f,pbr_fine:f,
+      chg_yoy:diff(f,yearAgo(ym),s),chg_mom:diff(f,monthAgo(ym),s)});
     delete s.sig; // signal()（overview.js）が細かい値で判定し直す。規則はサーバーの _compute_signal と同じ
+    _CHG_ROWS.push(s);
   };
-  const yearAgo=ym=>String(+ym.slice(0,4)-1)+ym.slice(4);
-  yms.forEach(ym=>(hist[ym]||[]).forEach(s=>apply(s,ym,yearAgo(ym))));
+  yms.forEach(ym=>(hist[ym]||[]).forEach(s=>apply(s,ym)));
   const latest=DASHBOARD_DATA.latest_yyyymm;
-  if(latest) (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest,yearAgo(latest)));
+  if(latest) (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest));
 })();
+// 選択中の比較期間を全業種行の chg に反映する
+function _applyChgBasis(){
+  _CHG_ROWS.forEach(s=>{s.chg=_chgBasis==='mom'?s.chg_mom:s.chg_yoy;});
+}
+_applyChgBasis();
 const SECTORS=DASHBOARD_DATA?.sectors_latest || SAMPLE_SECTORS;
 const MONTHS=DASHBOARD_DATA?.months || SAMPLE_MONTHS;
 // JPX公表の業種PBRは小数1桁。1倍割れの判定と推移は、月次スナップショットの pbr_fine（小数3桁）を優先する。
