@@ -306,6 +306,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
   .topbar > .logo{order:2;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis}
   .topbar > #dataModePill{order:3}
   .topbar > #themePill{order:4}
+  .topbar > #chgBasisPill{order:4}
   .topbar > .tb-ym{order:5;flex:1 1 55%}
   .topbar > .tb-btn{order:6}
   .topbar > .tb-right{order:7}
