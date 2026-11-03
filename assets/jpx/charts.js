@@ -361,7 +361,7 @@ Chart.register({
       if(pbr==null) return;
       const z=chart.data.datasets[0].data[i];
       ctx.fillStyle=z<-1?'rgba(91,141,246,.9)':z>1?'rgba(224,84,84,.8)':'rgba(107,116,145,.7)';
-      ctx.fillText(pbr.toFixed(1)+'x',chart.width-8,bar.y+3.5);
+      ctx.fillText(pbr.toFixed(2)+'x',chart.width-8,bar.y+3.5);
     });
     ctx.restore();
   }
@@ -518,8 +518,8 @@ function renderPbrHeatGrid(src){
     const chgColor=s.chg>0?'var(--green)':s.chg<0?'var(--red)':'var(--muted)';
     return `<div style="background:rgba(${r},${g},${b2},.18);border:1px solid rgba(${r},${g},${b2},.4);border-radius:5px;padding:5px 8px;cursor:pointer" onclick="showSectorDetail(SECTORS.find(x=>x.n==='${s.n}'))" title="${s.n}">
       <div style="color:var(--muted);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.n}</div>
-      <div style="font-family:var(--mono);font-weight:500;font-size:11px;color:var(--text)">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</div>
-      <div style="font-size:9px;color:${chgColor}">${s.chg>0?'▲':s.chg<0?'▼':'±'}${Math.abs(s.chg).toFixed(1)}</div>
+      <div style="font-family:var(--mono);font-weight:500;font-size:11px;color:var(--text)">${s.pbr!=null?s.pbr.toFixed(2)+'x':'–'}</div>
+      <div style="font-size:9px;color:${chgColor}">${s.chg>0?'▲':s.chg<0?'▼':'±'}${Math.abs(s.chg).toFixed(2)}</div>
     </div>`;
   }).join('');
 }
@@ -544,7 +544,7 @@ function renderPlotlyValuation(){
   const byChg=[...SECTORS].sort((a,b)=>b.chg-a.chg);
   renderPlotlyChart('indRankC',[
     {type:'bar',orientation:'h',name:'PBR変化',x:byChg.map(s=>s.chg),y:byChg.map(s=>s.n),
-      marker:{color:byChg.map(s=>s.chg>=0?'rgba(91,141,246,.75)':'rgba(224,84,84,.75)')},hovertemplate:'%{y}<br>PBR変化: %{x:.1f}x<extra></extra>'}
+      marker:{color:byChg.map(s=>s.chg>=0?'rgba(91,141,246,.75)':'rgba(224,84,84,.75)')},hovertemplate:'%{y}<br>PBR変化: %{x:.2f}x<extra></extra>'}
   ],{
     margin:{l:92,r:24,t:24,b:44},
     showlegend:false,
@@ -590,7 +590,7 @@ function renderPlotlyScatter(){
         opacity:0.78,
         line:{width:1,color:'rgba(255,255,255,.18)'}
       },
-      hovertemplate:'%{text}<br>PBR: %{x:.1f}x<br>時価総額: %{y:.1f}兆円<br>カテゴリ: %{customdata[0]}<br>上場社数: %{customdata[1]}<br>加重PER: %{customdata[2]}<extra></extra>'
+      hovertemplate:'%{text}<br>PBR: %{x:.2f}x<br>時価総額: %{y:.1f}兆円<br>カテゴリ: %{customdata[0]}<br>上場社数: %{customdata[1]}<br>加重PER: %{customdata[2]}<extra></extra>'
     }
   ],{
     showlegend:false,
@@ -732,7 +732,7 @@ function renderPlotlyEvent(ev){
   const shr=[...ev.shr].sort((a,b)=>b[1]-a[1]);
   renderPlotlyChart('evBarC',[
     {type:'bar',orientation:'h',name:'PBR変化',x:pbr.map(x=>x[1]),y:pbr.map(x=>x[0]),
-      marker:{color:pbr.map(x=>x[1]>=0?'rgba(91,141,246,.8)':'rgba(224,84,84,.8)')},hovertemplate:'%{y}<br>PBR変化: %{x:.1f}x<extra></extra>'}
+      marker:{color:pbr.map(x=>x[1]>=0?'rgba(91,141,246,.8)':'rgba(224,84,84,.8)')},hovertemplate:'%{y}<br>PBR変化: %{x:.2f}x<extra></extra>'}
   ],{
     margin:{l:88,r:24,t:24,b:44},
     showlegend:false,

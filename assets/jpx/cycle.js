@@ -187,7 +187,7 @@ function _initCycleDom(){
 
 // 業種別PBR乖離Zスコア（pbr1実データから計算、フォールバックは推定値）
 const Z_SCORES=(()=>{
-  const pbr1=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const pbr1=PBR1_FINE;
   if(pbr1?.sectors?.length&&pbr1?.matrix?.length){
     return pbr1.sectors.map((name,ri)=>{
       const s=SECTORS.find(x=>x.n===name)||{n:name,cat:'V',pbr:1.0};
@@ -249,7 +249,7 @@ function scoreLabel(v){
 
 // 選択月のPBRを使ってZスコアを再計算（正規化は全期間固定）
 function _zScoresFor(yyyymm){
-  const pbr1=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const pbr1=PBR1_FINE;
   const sh=DASHBOARD_DATA?.sectors_history?.[yyyymm]||SAMPLE_SECTORS_HISTORY[yyyymm.replace('/','')];
   if(!pbr1?.sectors?.length||!sh) return Z_SCORES;
   return pbr1.sectors.map((name,ri)=>{
@@ -301,7 +301,7 @@ function renderCycleSectors(zScores){
       <div class="rec-row" title="${phaseRecDetail(s,z)}">
         <span class="rec-name">${s.n}</span>
         <span class="rec-cat"><span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]}">${CAT_LBL[s.cat]}</span></span>
-        <span class="rec-pbr" style="color:${color}">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</span>
+        <span class="rec-pbr" style="color:${color}">${s.pbr!=null?s.pbr.toFixed(2)+'x':'–'}</span>
         <span class="rec-detail">${phaseRecZShort(z)}</span>
       </div>`;
     }).join('');
@@ -320,7 +320,7 @@ function renderCycleSectors(zScores){
     return `<tr title="${reason}">
       <td class="bold">${s.n}</td>
       <td><span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]}">${CAT_LBL[s.cat]}</span></td>
-      <td style="font-family:var(--mono)">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</td>
+      <td style="font-family:var(--mono)">${s.pbr!=null?s.pbr.toFixed(2)+'x':'–'}</td>
       <td><span class="chip" style="font-size:10px;padding:1px 8px;border-radius:99px;${r==='BUY'?'background:rgba(41,201,154,.15);color:var(--green)':r==='SELL'?'background:rgba(224,84,84,.12);color:var(--red)':'background:rgba(107,116,145,.12);color:var(--muted)'}">${r}</span></td>
       <td style="color:var(--muted);font-size:10px;line-height:1.6;white-space:nowrap">${phaseRecZShort(z)}</td>
     </tr>`;
@@ -330,7 +330,7 @@ function renderCycleSectors(zScores){
     charts.zscore.data.labels=zScores.map(s=>s.n);
     charts.zscore.data.datasets[0].data=zScores.map(s=>s.z);
     charts.zscore.data.datasets[0].backgroundColor=zScores.map(s=>s.z<-1?'rgba(91,141,246,.8)':s.z>1?'rgba(224,84,84,.8)':'rgba(107,116,145,.4)');
-    charts.zscore.options.plugins.tooltip.callbacks.label=c=>`Z=${c.parsed.x.toFixed(2)}　PBR:${zScores[c.dataIndex]?.pbr?.toFixed(1)||'?'}x`;
+    charts.zscore.options.plugins.tooltip.callbacks.label=c=>`Z=${c.parsed.x.toFixed(2)}　PBR:${zScores[c.dataIndex]?.pbr?.toFixed(2)||'?'}x`;
     charts.zscore.options.scales.x.min=zBounds[0];
     charts.zscore.options.scales.x.max=zBounds[1];
     charts.zscore.update();
@@ -358,7 +358,7 @@ function renderCycleSectors(zScores){
       <span style="width:18px;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0">${i+1}</span>
       <span class="rec-name">${s.n}</span>
       <span class="rec-cat"><span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]}">${CAT_LBL[s.cat]}</span></span>
-      <span class="rec-pbr">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</span>
+      <span class="rec-pbr">${s.pbr!=null?s.pbr.toFixed(2)+'x':'–'}</span>
       <div class="bar-track" style="flex:1">
         <div class="bar-fill" style="width:${barW}%;background:${barCol}"></div>
       </div>
@@ -523,7 +523,7 @@ function renderCycleTheory(zScores){
     el.innerHTML=items.map(s=>`<div class="cquad-sec-row">
       <span class="cquad-sec-sig" style="background:${s.col}22;color:${s.col}">${s.sig}</span>
       <span class="cquad-sec-name">${s.n}</span>
-      <span class="cquad-sec-pbr">${s.pbr!=null?s.pbr.toFixed(1)+'x':'–'}</span>
+      <span class="cquad-sec-pbr">${s.pbr!=null?s.pbr.toFixed(2)+'x':'–'}</span>
     </div>`).join('');
   });
 }

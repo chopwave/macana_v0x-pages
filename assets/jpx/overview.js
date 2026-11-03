@@ -21,7 +21,7 @@ function updateOverviewKPI(){
   if(kv[3]) kv[3].querySelector('.kpi-val').innerHTML=`${Math.round(totalCap)}<span style="font-size:12px;color:var(--muted)">兆円</span>`;
   if(kv[4]&&maxS.n){
     kv[4].querySelector('.kpi-val').innerHTML=`<span style="font-size:15px">${maxS.n}</span>`;
-    kv[4].querySelector('.kpi-sub').innerHTML=`<span style="font-family:var(--mono);color:var(--purple)">${maxS.pbr!=null?maxS.pbr.toFixed(1):'–'}x</span>`;
+    kv[4].querySelector('.kpi-sub').innerHTML=`<span style="font-family:var(--mono);color:var(--purple)">${maxS.pbr!=null?maxS.pbr.toFixed(2):'–'}x</span>`;
   }
   document.getElementById('nb-below').textContent=below1;
   const metaEl=document.querySelector('#pg-overview .g2 .card:first-child .card-meta');
@@ -39,7 +39,7 @@ function renderOverviewSignals(){
   function fmt(list,empty){
     if(!list.length) return `<span style="color:var(--muted)">${empty}</span>`;
     return list.map(s=>{
-      const pbr=s.pbr!=null?s.pbr.toFixed(1)+'x':'–';
+      const pbr=s.pbr!=null?s.pbr.toFixed(2)+'x':'–';
       const catCol=CAT_COL[s.cat]||'var(--muted)';
       return `<span style="display:inline-flex;align-items:center;gap:3px;margin:1px 6px 1px 0"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${catCol};flex-shrink:0"></span><span style="color:var(--text)">${s.n}</span><span style="font-family:var(--mono);color:var(--muted);font-size:10px">${pbr}</span></span>`;
     }).join('');
@@ -168,8 +168,8 @@ function renderScreen(){
     return `<tr>
       <td class="bold">${s.n}</td>
       <td><span class="chip" style="background:${catCol}22;color:${catCol}">${CAT_LBL[s.cat]}</span></td>
-      <td style="font-family:var(--mono);color:${s.pbr<1?'var(--amber)':'var(--text)'};font-weight:500">${s.pbr.toFixed(1)}x</td>
-      <td style="font-family:var(--mono);color:${chgColor}">${chgSym}${Math.abs(s.chg).toFixed(1)}</td>
+      <td style="font-family:var(--mono);color:${s.pbr<1?'var(--amber)':'var(--text)'};font-weight:500">${s.pbr.toFixed(2)}x</td>
+      <td style="font-family:var(--mono);color:${chgColor}">${chgSym}${Math.abs(s.chg).toFixed(2)}</td>
       <td style="font-family:var(--mono)">${s.per!=null?s.per+'x':'－'}</td>
       <td style="font-family:var(--mono)">${s.cap.toFixed(1)}兆</td>
       <td style="font-family:var(--mono)">${s.cos}</td>
@@ -212,10 +212,10 @@ function renderSectList(){
     if(!s) return `<div style="height:6px;border-top:1px solid ${dividerColor()};margin:3px 0"></div>`;
     const col=s.pbr>=1?'var(--green)':'var(--amber)';
     const w=Math.min(100,s.pbr/4*100);
-    const c=s.chg>0?`<span class="up">▲${s.chg.toFixed(1)}</span>`:s.chg<0?`<span class="dn">▼${Math.abs(s.chg).toFixed(1)}</span>`:`<span style="color:var(--muted)">±0.0</span>`;
+    const c=s.chg>0?`<span class="up">▲${s.chg.toFixed(2)}</span>`:s.chg<0?`<span class="dn">▼${Math.abs(s.chg).toFixed(2)}</span>`:`<span style="color:var(--muted)">±0.0</span>`;
     return `<div class="sbar-row"><span class="sbar-name">${s.n}</span>
       <div class="sbar-track"><div class="sbar-fill" style="width:${w}%;background:${col}"></div></div>
-      <span class="sbar-val" style="color:${col}">${s.pbr.toFixed(1)}x</span>
+      <span class="sbar-val" style="color:${col}">${s.pbr.toFixed(2)}x</span>
       <span class="sbar-chg">${c}</span></div>`;
   }).join('');
 }

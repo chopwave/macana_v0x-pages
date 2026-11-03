@@ -162,7 +162,7 @@ function _onYmKpi(yyyymm,ym){
   }
   if(kv[4]&&maxS.n){
     kv[4].querySelector('.kpi-val').innerHTML=`<span style="font-size:15px">${maxS.n}</span>`;
-    kv[4].querySelector('.kpi-sub').innerHTML=`<span style="font-family:var(--mono);color:var(--purple)">${maxS.pbr!=null?maxS.pbr.toFixed(1):'–'}x</span>`;
+    kv[4].querySelector('.kpi-sub').innerHTML=`<span style="font-family:var(--mono);color:var(--purple)">${maxS.pbr!=null?maxS.pbr.toFixed(2):'–'}x</span>`;
   }
   document.getElementById('nb-below').textContent=below1;
   renderOverviewSignals();
@@ -294,7 +294,7 @@ function _onYmScatter(yyyymm,ym){
       customdata:src.map(s=>[CAT_LBL[s.cat],s.cos,s.per]),
       marker:{size:src.map(s=>Math.max(12,Math.sqrt(s.cos??1)*3.8)),color:src.map(s=>CAT_COL[s.cat]),
         sizemode:'diameter',opacity:0.78,line:{width:1,color:'rgba(255,255,255,.18)'}},
-      hovertemplate:'%{text}<br>PBR: %{x:.1f}x<br>時価総額: %{y:.1f}兆円<br>カテゴリ: %{customdata[0]}<br>上場社数: %{customdata[1]}<br>加重PER: %{customdata[2]}<extra></extra>'}
+      hovertemplate:'%{text}<br>PBR: %{x:.2f}x<br>時価総額: %{y:.1f}兆円<br>カテゴリ: %{customdata[0]}<br>上場社数: %{customdata[1]}<br>加重PER: %{customdata[2]}<extra></extra>'}
   ],{showlegend:false,
     xaxis:{title:'加重PBR（倍）',ticksuffix:'x',range:[0,4.5]},
     yaxis:{title:'時価総額（兆円）'}});
@@ -323,7 +323,7 @@ function _onYmScatter(yyyymm,ym){
   renderPlotlyChart('indRankC',[
     {type:'bar',orientation:'h',name:'PBR変化',x:byChgP.map(s=>s.chg??0),y:byChgP.map(s=>s.n),
       marker:{color:byChgP.map(s=>(s.chg??0)>=0?'rgba(91,141,246,.75)':'rgba(224,84,84,.75)')},
-      hovertemplate:'%{y}<br>PBR変化: %{x:.1f}x<extra></extra>'}
+      hovertemplate:'%{y}<br>PBR変化: %{x:.2f}x<extra></extra>'}
   ],{margin:{l:92,r:24,t:24,b:44},showlegend:false,
     xaxis:{title:'PBR変化（倍）',ticksuffix:'x'},yaxis:{autorange:'reversed'}});
 

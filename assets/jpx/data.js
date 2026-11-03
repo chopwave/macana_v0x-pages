@@ -122,6 +122,27 @@ const SAMPLE_DECOMP=(()=>{
     return {n:s.n,na,pbr,total:+(na+pbr).toFixed(3)};
   }).sort((a,b)=>Math.abs(b.total)-Math.abs(a.total));
 })();
+// JPX公表の業種PBRは小数1桁。業種行の pbr を pbr_fine（小数3桁）に置き換え、変化 chg とシグナル sig も
+// 細かい値で作り直す（chg の比較先は元のまま：最新月は前月、月次履歴は前年同月）。公表値は *_pub に残す。
+(()=>{
+  const hist=DASHBOARD_DATA?.sectors_history;
+  if(!hist) return;
+  const fine=new Map();
+  Object.entries(hist).forEach(([ym,list])=>(list||[]).forEach(s=>{if(s.pbr_fine!=null) fine.set(ym+'|'+s.n,s.pbr_fine);}));
+  const yms=Object.keys(hist).sort();
+  const apply=(s,ym,priorYm)=>{
+    const f=fine.get(ym+'|'+s.n);
+    if(f==null) return;
+    const p=priorYm?fine.get(priorYm+'|'+s.n):null;
+    Object.assign(s,{pbr_pub:s.pbr,chg_pub:s.chg,sig_pub:s.sig,pbr:f,pbr_fine:f});
+    if(p!=null) s.chg=+(f-p).toFixed(3);
+    delete s.sig; // signal()（overview.js）が細かい値で判定し直す。規則はサーバーの _compute_signal と同じ
+  };
+  yms.forEach(ym=>(hist[ym]||[]).forEach(s=>apply(s,ym,String(+ym.slice(0,4)-1)+ym.slice(4))));
+  const latest=DASHBOARD_DATA.latest_yyyymm;
+  const prev=yms.filter(ym=>ym<latest).pop();
+  (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest,prev));
+})();
 const SECTORS=DASHBOARD_DATA?.sectors_latest || SAMPLE_SECTORS;
 const MONTHS=DASHBOARD_DATA?.months || SAMPLE_MONTHS;
 // JPX公表の業種PBRは小数1桁。1倍割れの判定と推移は、月次スナップショットの pbr_fine（小数3桁）を優先する。
@@ -159,13 +180,14 @@ const SPR_DATA=_calcSprData(SECTORS);
 let _activeSectors=null;
 let _activeYm=null; // 年月スライダーで選択中の月（YYYY/MM）。未選択は最新月
 function _curSectors(){return _activeSectors||SECTORS;}
-const PBR_TS=DASHBOARD_DATA?.pbr_ts || SAMPLE_PBR_TS;
+// 市場・規模・製造業別の加重PBRも、細かい値（*_fine）があれば優先する（無い会員データでは公表値）
+const PBR_TS=DASHBOARD_DATA?.pbr_ts_fine || DASHBOARD_DATA?.pbr_ts || SAMPLE_PBR_TS;
 const PER_TS=DASHBOARD_DATA?.per_ts || SAMPLE_PER_TS;
-const LG=DASHBOARD_DATA?.lg || SAMPLE_LG;
-const MED=DASHBOARD_DATA?.med || SAMPLE_MED;
-const SM=DASHBOARD_DATA?.sm || SAMPLE_SM;
-const MFG=DASHBOARD_DATA?.mfg || SAMPLE_MFG;
-const NMFG=DASHBOARD_DATA?.nmfg || SAMPLE_NMFG;
+const LG=DASHBOARD_DATA?.lg_fine || DASHBOARD_DATA?.lg || SAMPLE_LG;
+const MED=DASHBOARD_DATA?.med_fine || DASHBOARD_DATA?.med || SAMPLE_MED;
+const SM=DASHBOARD_DATA?.sm_fine || DASHBOARD_DATA?.sm || SAMPLE_SM;
+const MFG=DASHBOARD_DATA?.mfg_fine || DASHBOARD_DATA?.mfg || SAMPLE_MFG;
+const NMFG=DASHBOARD_DATA?.nmfg_fine || DASHBOARD_DATA?.nmfg || SAMPLE_NMFG;
 const EVENTS=DASHBOARD_DATA?.events || SAMPLE_EVENTS;
 
 // ─── サンプル: 銘柄一覧 ───
