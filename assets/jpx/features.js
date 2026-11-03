@@ -182,14 +182,23 @@ function renderPhaseHistory(){
 })();
 
 // ────── sidebar toggle ──────
+function _isMobileLayout(){return window.matchMedia('(max-width:700px)').matches;}
+function closeMobileSidebar(){document.querySelector('.shell')?.classList.remove('sidebar-mobile-open');}
 function toggleSidebar(){
   const shell=document.querySelector('.shell');
+  if(_isMobileLayout()){
+    shell.classList.toggle('sidebar-mobile-open');
+    return;
+  }
   const collapsed=shell.classList.toggle('sidebar-collapsed');
   localStorage.setItem('sidebarCollapsed', collapsed?'1':'0');
 }
 (function(){
   if(localStorage.getItem('sidebarCollapsed')==='1')
     document.querySelector('.shell').classList.add('sidebar-collapsed');
+  document.addEventListener('click',function(e){
+    if(_isMobileLayout()&&!e.target.closest('.sidebar,#sidebarToggle')) closeMobileSidebar();
+  });
   document.addEventListener('keydown',function(e){
     if((e.key==='['||e.key==='「')&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&
        !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){

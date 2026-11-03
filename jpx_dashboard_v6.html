@@ -26,7 +26,7 @@
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="./assets/jpx/jpx_dashboard_data_latest.js?v=members-v1"></script>
-<link rel="stylesheet" href="./assets/jpx/dashboard.css">
+<link rel="stylesheet" href="./assets/jpx/dashboard.css?v=mobile-v1">
 </head>
 <body>
 <div class="shell">
@@ -130,6 +130,7 @@
 <div class="content" id="contentArea">
 <div id="sampleModeBanner" class="sample-mode-banner">
   <strong>サンプルデータ表示中</strong>：いま表示しているのは代表値ベースの参考データです。実データへ切り替えると、全銘柄と評価系の詳細を利用できます。
+  <a class="plan-cta plan-link" data-plan-place="sample_banner" href="https://note.com/chopwave/membership/join" target="_blank" rel="noopener">プランを見る（note）</a>
 </div>
 
 <!-- ═══ ReadMe First ═══ -->
@@ -158,8 +159,9 @@
       <div>
         <div style="font-weight:500;color:var(--accent);margin-bottom:4px">🔒 有償会員（メンバーシップ）限定機能</div>
         <div style="color:var(--muted)">
-          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>。右上の <strong>🔒 会員ログイン</strong> ボタンからメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
+          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>。上部の <strong>🔒 実データへ</strong> または銘柄別評価の <strong>🔒 会員ログイン</strong> からメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
         </div>
+        <div class="plan-cta" style="margin-top:8px;color:var(--muted)">noteのメンバーシップ「プランC」（月2,200円）で利用できます。登録と利用にはメールアドレスが必要です。参加後、note の<a class="plan-link" data-track-event="event/registration_contact/readme" href="https://note.com/chopwave/message" target="_blank" rel="noopener">クリエイターへのお問い合わせ</a>からログインに使うメールアドレスをお知らせください。登録には1日ほどかかります。 <a class="plan-link" data-plan-place="readme" href="https://note.com/chopwave/membership/join" target="_blank" rel="noopener">プランを見る（note）</a></div>
       </div>
     </div>
     <div style="margin-top:10px;padding:8px 12px;background:var(--bg3);border-radius:6px;font-size:10px;color:var(--hint);line-height:1.7">
@@ -1379,8 +1381,9 @@
           <option value="6">Step6以上（バリュエーション）</option>
           <option value="7">Step7通過（タイミング）</option>
         </select>
-        <button id="stocksLockBtn" onclick="showMemberLogin()" class="tb-btn"
+        <button id="stocksLockBtn" onclick="showMemberLogin('eval_lock')" class="tb-btn"
           title="スコア・ランク・ステップ通過は有償会員限定の情報です">🔒 会員ログイン</button>
+        <a class="plan-cta plan-link" data-plan-place="eval" href="https://note.com/chopwave/membership/join" target="_blank" rel="noopener">プランを見る（note）</a>
         <span class="info-icon" tabindex="0" data-tip="Step フィルタは、その段階まで連続通過した銘柄に絞り込みます。&#10;Step4以上 は Step1〜4 をすべて通過した銘柄です。" data-tip-pos="bottom">i</span>
       </div>
     </div>
@@ -1437,9 +1440,9 @@
 </div>
 
 
-<p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
-<script src="./assets/jpx/member_access.js?v=members-v5"></script>
-<script src="./assets/jpx/analytics.js?v=analytics-v1"></script>
+<p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、開いた画面、主な操作（プラン案内・ログイン・CSV出力）、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
+<script src="./assets/jpx/member_access.js?v=members-v6"></script>
+<script src="./assets/jpx/analytics.js?v=analytics-v2"></script>
 
 
 <!-- B-4: セクター詳細ダイアログ -->

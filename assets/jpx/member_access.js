@@ -78,6 +78,28 @@
       status.id = 'memberLoginMsg';
       status.setAttribute('role', 'status');
       dialog.appendChild(status);
+      const join = document.createElement('p');
+      join.className = 'plan-cta';
+      join.textContent = 'まだ会員でない方：実データはnoteの「プランC」（月2,200円）で利用できます。登録と利用にはメールアドレスが必要です。';
+      const joinLink = document.createElement('a');
+      joinLink.className = 'plan-link';
+      joinLink.dataset.planPlace = 'login_dialog';
+      joinLink.href = 'https://note.com/chopwave/membership/join';
+      joinLink.target = '_blank';
+      joinLink.rel = 'noopener';
+      joinLink.textContent = 'プランを見る';
+      join.appendChild(joinLink);
+      join.append('（参加後、note の');
+      const contactLink = document.createElement('a');
+      contactLink.className = 'plan-link';
+      contactLink.dataset.trackEvent = 'event/registration_contact/login_dialog';
+      contactLink.href = 'https://note.com/chopwave/message';
+      contactLink.target = '_blank';
+      contactLink.rel = 'noopener';
+      contactLink.textContent = 'クリエイターへのお問い合わせ';
+      join.appendChild(contactLink);
+      join.append('からログインに使うメールアドレスをお知らせください。登録には1日ほどかかります）');
+      dialog.appendChild(join);
       const buttons = [['コード送信', sendCode], ['ログイン', verifyCode], ['ログアウト', logout], ['閉じる', () => dialog.close()]];
       for (const [label, handler] of buttons) {
         const button = document.createElement('button');
@@ -108,6 +130,7 @@
     const email = document.getElementById('memberEmailInput').value.trim();
     if (!document.getElementById('memberEmailInput').checkValidity() || !email) return message('メールアドレスを入力してください。');
     await authRequest('otp', {email, create_user: false});
+    window.macanaTrack?.('event/login_code_sent');
     message('確認コードを送信しました。メールをご確認ください。');
   }
   async function verifyCode() {
@@ -121,6 +144,7 @@
     try { await loadMemberData(session.access_token); }
     catch (err) { clearSession(); throw err; }
     sessionStorage.setItem(sessionKey, JSON.stringify(session));
+    window.macanaTrack?.('event/login_success');
     const next = new URL(location.href);
     next.searchParams.delete('mode');
     location.replace(next.toString());
@@ -138,6 +162,7 @@
       const data = await loadMemberData(session.access_token, true);
       if (new URLSearchParams(location.search).get('mode') !== 'sample') window.JPX_DASHBOARD_DATA = data;
       authorized = true;
+      document.documentElement.classList.add('macana-member');
       // Recheck revocation while a tab remains open; data is never persisted to storage.
       setInterval(async () => {
         try { if (expiry <= Date.now()) throw new Error('expired'); await loadMemberData(session.access_token); }
@@ -150,7 +175,7 @@
     for (const file of ['data', 'overview', 'heatmap', 'charts', 'notes', 'features', 'navigation', 'cycle', 'stocks']) {
       await new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = './assets/jpx/' + file + '.js?v=members-v5';
+        script.src = './assets/jpx/' + file + '.js?v=members-v6';
         script.onload = resolve;
         script.onerror = reject;
         document.body.appendChild(script);

@@ -1,5 +1,6 @@
 // ────── navigation ──────
 let _cycleInited=false;
+let _trackedScreen='overview';
 function goto(id,el,silent){
   if(id==='notes' && typeof _isMember==='function' && !_isMember()){
     if(typeof showMemberLogin==='function') showMemberLogin();
@@ -8,6 +9,11 @@ function goto(id,el,silent){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('act'));
   document.getElementById('pg-'+id).classList.add('act');
+  if(id!==_trackedScreen){
+    _trackedScreen=id;
+    window.macanaTrack?.('screen/'+id);
+  }
+  if(typeof closeMobileSidebar==='function') closeMobileSidebar();
   if(el) el.classList.add('act');
   else if(!silent){
     document.querySelectorAll('.nav-item').forEach(n=>{

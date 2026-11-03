@@ -15,7 +15,10 @@ function _isMember() {
   return isMemberAuthorized();
 }
 
-function showMemberLogin() { window.MacanaMembers?.loginDialog(); }
+function showMemberLogin(source = 'other') {
+  window.macanaTrack?.('event/login_open/' + source);
+  window.MacanaMembers?.loginDialog();
+}
 function _doMemberLogout() { window.MacanaMembers?.logout(); }
 
 function _updateMemberUI() {

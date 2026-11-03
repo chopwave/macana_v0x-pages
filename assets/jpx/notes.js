@@ -192,9 +192,10 @@ function updateCsvExportUI(){
 }
 function exportCSV(){
   if(typeof _isMember==='function' && !_isMember()){
-    if(typeof showMemberLogin==='function') showMemberLogin();
+    if(typeof showMemberLogin==='function') showMemberLogin('csv');
     return;
   }
+  window.macanaTrack?.('event/csv_export');
   const rows=[['業種','カテゴリ','加重PBR','PBR前期比','加重PER','時価総額(兆円)','上場社数','シグナル']];
   _curSectors().forEach(s=>rows.push([s.n,CAT_LBL[s.cat],s.pbr,s.chg,s.per??'',s.cap,s.cos,signal(s).txt]));
   const csv=rows.map(r=>r.join(',')).join('\n');

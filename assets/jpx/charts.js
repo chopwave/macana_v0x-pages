@@ -189,7 +189,7 @@ function updateSampleModeBanner(){
 }
 function toggleDataMode(){
   if(typeof _isMember==='function' && !_isMember()){
-    if(typeof showMemberLogin==='function') showMemberLogin();
+    if(typeof showMemberLogin==='function') showMemberLogin('data_pill');
     return;
   }
   const url=new URL(location.href);
