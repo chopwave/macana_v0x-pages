@@ -196,12 +196,16 @@ function exportCSV(){
     return;
   }
   window.macanaTrack?.('event/csv_export');
-  const rows=[['業種','カテゴリ','加重PBR','PBR'+_CHG_BASIS_LABEL[_chgBasis],'加重PER','時価総額(兆円)','上場社数','シグナル']];
-  _curSectors().forEach(s=>rows.push([s.n,CAT_LBL[s.cat],s.pbr,s.chg,s.per??'',s.cap,s.cos,signal(s).txt]));
-  const csv=rows.map(r=>r.join(',')).join('\n');
+  // 選択中の年月の33業種（スクリーニングの絞り込みは反映しない）。年月と比較期間はファイル名に入れる
+  const ym=(_activeYm||MONTHS[MONTHS.length-1]||'').replace('/','');
+  const rows=[['業種','カテゴリ','加重PBR','PBR'+_CHG_BASIS_LABEL[_chgBasis],'加重PER','時価総額(兆円)','上場社数','配当利回り(%)','シグナル']];
+  _curSectors().forEach(s=>rows.push([s.n,CAT_LBL[s.cat],s.pbr,s.chg,s.per,s.cap,s.cos,s.dy,signal(s).txt]));
+  // 区切りのカンマと引用符は全角に置き換え、列がずれないようにする
+  const cell=v=>v==null?'':String(v).replace(/,/g,'、').replace(/"/g,'”');
+  const csv=rows.map(r=>r.map(cell).join(',')).join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
-  a.download='jpx_screening.csv';a.click();
+  a.download=`jpx_screening_${ym||'latest'}_${_chgBasis}.csv`;a.click();
 }
 
 (function initCsvExportUI(){
