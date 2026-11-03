@@ -6,8 +6,6 @@ function selEv(idx,btn){
   const ev=EVENTS[idx];
   document.getElementById('evBanner').innerHTML=`<strong>${ev.label}</strong>（${ev.period}）：${ev.desc}`;
   document.getElementById('evPeriod').textContent=ev.period;
-  if(evNotes[idx]) document.getElementById('evNote').value=evNotes[idx];
-  else document.getElementById('evNote').value='';
   const pbr=ev.pbr.sort((a,b)=>b[1]-a[1]);
   const shr=ev.shr.sort((a,b)=>b[1]-a[1]);
   if(evCharts.bar){evCharts.bar.destroy();evCharts.bar=null;}
@@ -24,13 +22,6 @@ function selEv(idx,btn){
         y:{ticks:{color:chartLabelColor(),font:{size:10}},grid:{display:false}}}}});
   renderPlotlyEvent(ev);
   applyChartMode();
-}
-function saveEvNote(){
-  if(!_requireMemberNotes('イベントメモ保存')) return;
-  const t=document.getElementById('evNote').value.trim();
-  if(!t) return;
-  evNotes[currentEv]=t;
-  addNote(t,`イベント：${EVENTS[currentEv].label}`,'投資','(イベントメモ)');
 }
 
 // ────── notes ──────
@@ -101,14 +92,6 @@ function addNote(text,context,tag,author,team){
   persistNotes();
   updateNotesAccessUI();
   renderNotes();
-}
-function addToNote(name,pbr,chg){
-  if(!_requireMemberNotes('メモ追加')) return;
-  goto('notes',null,true);
-  document.getElementById('noteText').value=`【${name}】PBR ${pbr.toFixed(1)}x　前期比 ${chg>=0?'+':''}${chg.toFixed(1)}x\n`;
-  const tagEl=document.getElementById('noteTag');
-  if(tagEl) tagEl.value='投資';
-  document.getElementById('noteText').focus();
 }
 function delNote(i){
   if(!_requireMemberNotes('メモ削除')) return;

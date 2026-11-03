@@ -415,7 +415,7 @@ function isMemberAuthorized(){
 // ────── state ──────
 let fCat='all', fPbr='all', fChgMin=-1, fSearch='';
 let _screenSort={key:'code',asc:true};
-let notes=[], evNotes={};
+let notes=[];
 let charts={};
 let evCharts={bar:null,shr:null};
 let currentEv=0;

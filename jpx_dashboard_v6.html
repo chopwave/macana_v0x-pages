@@ -668,14 +668,6 @@
       <div class="ch ch-220"><canvas id="evShareC"></canvas></div>
     </div>
   </div>
-  <!-- investment memo for this event -->
-  <div class="card">
-    <div class="card-hd"><span class="card-title">投資判断メモ（このイベント）<span class="info-icon" tabindex="0" data-tip="イベント単位で保存する共有メモです。&#10;会員ログイン後に編集・再利用できます。" data-tip-pos="bottom">i</span></span><span class="card-meta">チーム共有</span></div>
-    <textarea class="note-area" id="evNote" placeholder="このイベントから得られた仮説・投資シグナルを記録..."></textarea>
-    <div style="display:flex;justify-content:flex-end;margin-top:6px">
-      <button style="background:var(--accent);color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:11px;cursor:pointer" onclick="saveEvNote()">保存</button>
-    </div>
-  </div>
 </div>
 
 <!-- ═══ 散布図 ═══ -->
@@ -1446,7 +1438,7 @@
 
 
 <p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
-<script src="./assets/jpx/member_access.js?v=members-v4"></script>
+<script src="./assets/jpx/member_access.js?v=members-v5"></script>
 <script src="./assets/jpx/analytics.js?v=analytics-v1"></script>
 
 
@@ -1479,7 +1471,6 @@
   <div style="font-size:11px;color:var(--muted);margin-bottom:6px">シグナル</div>
   <div id="dlgSignal" style="margin-bottom:14px"></div>
   <div style="display:flex;justify-content:flex-end;gap:8px">
-    <button class="tb-btn" onclick="dlgToNote()">メモに追加</button>
     <button class="tb-btn" onclick="document.getElementById('sectorDlg').close()">閉じる</button>
   </div>
 </dialog>

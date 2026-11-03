@@ -464,10 +464,8 @@ function _renderCdTopSectors(src){
 // ─────────────────────────────────────────
 // B-4: 散布図クリック → 詳細ダイアログ
 // ─────────────────────────────────────────
-let _dlgSector=null;
 function showSectorDetail(s){
   if(!s) return;
-  _dlgSector=s;
   const sig=signal(s);
   document.getElementById('dlgTitle').innerHTML=`${s.n} <span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]};font-size:10px">${CAT_LBL[s.cat]}</span>`;
   document.getElementById('dlgPbr').innerHTML=s.pbr!=null?`${s.pbr.toFixed(2)}<span style="font-size:11px;color:var(--muted)">x</span>`:'–';
@@ -484,13 +482,6 @@ function showSectorDetail(s){
   document.getElementById('dlgSignal').innerHTML=`<span class="chip ${sig.cls}">${sig.txt||'–'}</span>`;
   document.getElementById('sectorDlg').showModal();
 }
-function dlgToNote(){
-  if(!_dlgSector) return;
-  if(typeof _requireMemberNotes==='function' && !_requireMemberNotes('メモ追加')) return;
-  document.getElementById('sectorDlg').close();
-  addToNote(_dlgSector.n,_dlgSector.pbr||0,_dlgSector.chg||0);
-}
-
 // ─────────────────────────────────────────
 // B-8: メモのピン留め
 // ─────────────────────────────────────────

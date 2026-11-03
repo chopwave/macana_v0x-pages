@@ -585,7 +585,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
         <th onclick="_sortScreen('cap')" style="cursor:pointer" data-skey="cap">時価総額</th>
         <th onclick="_sortScreen('cos')" style="cursor:pointer" data-skey="cos">上場社数</th>
         <th onclick="_sortScreen('dy')" style="cursor:pointer" data-skey="dy">配当利回り</th>
-        <th>シグナル<span class="info-icon" data-tip="強いBuy: PBR&lt;0.6x かつ 前期比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前期比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前期比&lt;0 または 前期比&gt;+0.8x" data-tip-pos="bottom">i</span></th><th>アクション</th>
+        <th>シグナル<span class="info-icon" data-tip="強いBuy: PBR&lt;0.6x かつ 前期比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前期比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前期比&lt;0 または 前期比&gt;+0.8x" data-tip-pos="bottom">i</span></th>
       </tr></thead>
       <tbody id="screenBody"></tbody>
     </table>
@@ -752,14 +752,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
     <div class="card">
       <div class="card-hd"><span class="card-title">時価総額シェア変化（pp）</span></div>
       <div class="ch ch-220"><canvas id="evShareC"></canvas></div>
-    </div>
-  </div>
-  <!-- investment memo for this event -->
-  <div class="card">
-    <div class="card-hd"><span class="card-title">投資判断メモ（このイベント）</span><span class="card-meta">チーム共有</span></div>
-    <textarea class="note-area" id="evNote" placeholder="このイベントから得られた仮説・投資シグナルを記録..."></textarea>
-    <div style="display:flex;justify-content:flex-end;margin-top:6px">
-      <button style="background:var(--accent);color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:11px;cursor:pointer" onclick="saveEvNote()">保存</button>
     </div>
   </div>
 </div>
@@ -1228,7 +1220,7 @@ const EVENTS=DASHBOARD_DATA?.events || SAMPLE_EVENTS;
 // ────── state ──────
 let fCat='all', fPbr='all', fChgMin=-1, fSearch='';
 let _screenSort={key:'code',asc:true};
-let notes=[], evNotes={};
+let notes=[];
 let charts={};
 let evCharts={bar:null,shr:null};
 let currentEv=0;
@@ -1410,7 +1402,6 @@ function renderScreen(){
       <td style="font-family:var(--mono)">${s.cos}</td>
       <td style="font-family:var(--mono)">${s.dy!=null?s.dy.toFixed(1)+'%':'–'}</td>
       <td>${sig.txt?`<span class="chip ${sig.cls}">${sig.txt}</span>`:''}</td>
-      <td><button onclick="addToNote('${s.n}',${s.pbr},${s.chg})" style="background:none;border:1px solid var(--border2);color:var(--muted);padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer">メモ</button></td>
     </tr>`;
   }).join('');
 }
@@ -1882,10 +1873,8 @@ function _renderCdTopSectors(src){
 // ─────────────────────────────────────────
 // B-4: 散布図クリック → 詳細ダイアログ
 // ─────────────────────────────────────────
-let _dlgSector=null;
 function showSectorDetail(s){
   if(!s) return;
-  _dlgSector=s;
   const sig=signal(s);
   document.getElementById('dlgTitle').innerHTML=`${s.n} <span class="chip" style="background:${CAT_COL[s.cat]}22;color:${CAT_COL[s.cat]};font-size:10px">${CAT_LBL[s.cat]}</span>`;
   document.getElementById('dlgPbr').innerHTML=s.pbr!=null?`${s.pbr.toFixed(2)}<span style="font-size:11px;color:var(--muted)">x</span>`:'–';
@@ -1900,11 +1889,6 @@ function showSectorDetail(s){
     :'<span style="font-size:10px;color:var(--muted)">（実データ接続時に表示）</span>';
   document.getElementById('dlgSignal').innerHTML=`<span class="chip ${sig.cls}">${sig.txt||'–'}</span>`;
   document.getElementById('sectorDlg').showModal();
-}
-function dlgToNote(){
-  if(!_dlgSector) return;
-  document.getElementById('sectorDlg').close();
-  addToNote(_dlgSector.n,_dlgSector.pbr||0,_dlgSector.chg||0);
 }
 
 // ─────────────────────────────────────────
@@ -2237,8 +2221,6 @@ function selEv(idx,btn){
   const ev=EVENTS[idx];
   document.getElementById('evBanner').innerHTML=`<strong>${ev.label}</strong>（${ev.period}）：${ev.desc}`;
   document.getElementById('evPeriod').textContent=ev.period;
-  if(evNotes[idx]) document.getElementById('evNote').value=evNotes[idx];
-  else document.getElementById('evNote').value='';
   const pbr=ev.pbr.sort((a,b)=>b[1]-a[1]);
   const shr=ev.shr.sort((a,b)=>b[1]-a[1]);
   if(evCharts.bar){evCharts.bar.destroy();evCharts.bar=null;}
@@ -2255,12 +2237,6 @@ function selEv(idx,btn){
         y:{ticks:{color:chartLabelColor(),font:{size:10}},grid:{display:false}}}}});
   renderPlotlyEvent(ev);
   applyChartMode();
-}
-function saveEvNote(){
-  const t=document.getElementById('evNote').value.trim();
-  if(!t) return;
-  evNotes[currentEv]=t;
-  addNote(t,`イベント：${EVENTS[currentEv].label}`,'投資','(イベントメモ)');
 }
 
 // ────── notes ──────
@@ -2302,13 +2278,6 @@ function addNote(text,context,tag,author,team){
   persistNotes();
   updateNotesBadge();
   renderNotes();
-}
-function addToNote(name,pbr,chg){
-  goto('notes',null,true);
-  document.getElementById('noteText').value=`【${name}】PBR ${pbr.toFixed(1)}x　前期比 ${chg>=0?'+':''}${chg.toFixed(1)}x\n`;
-  const tagEl=document.getElementById('noteTag');
-  if(tagEl) tagEl.value='投資';
-  document.getElementById('noteText').focus();
 }
 function delNote(i){
   notes.splice(i,1);
@@ -3300,7 +3269,6 @@ window.addEventListener('load',()=>{
   <div style="font-size:11px;color:var(--muted);margin-bottom:6px">シグナル</div>
   <div id="dlgSignal" style="margin-bottom:14px"></div>
   <div style="display:flex;justify-content:flex-end;gap:8px">
-    <button class="tb-btn" onclick="dlgToNote()">メモに追加</button>
     <button class="tb-btn" onclick="document.getElementById('sectorDlg').close()">閉じる</button>
   </div>
 </dialog>
