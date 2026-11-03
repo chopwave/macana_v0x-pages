@@ -430,12 +430,12 @@
         <th onclick="_sortScreen('code')" style="cursor:pointer" data-skey="code">業種</th>
         <th onclick="_sortScreen('cat')" style="cursor:pointer" data-skey="cat">カテゴリ</th>
         <th onclick="_sortScreen('pbr')" style="cursor:pointer" data-skey="pbr">加重PBR</th>
-        <th onclick="_sortScreen('chg')" style="cursor:pointer" data-skey="chg">前期比<span class="info-icon" data-tip="前月末比のPBR変化量（絶対値）。&#10;+0.1x = 先月より0.1倍上昇。&#10;▲は上昇、▼は下落を示す。" data-tip-pos="bottom">i</span></th>
+        <th onclick="_sortScreen('chg')" style="cursor:pointer" data-skey="chg">前年同月比<span class="info-icon" data-tip="1年前の同じ月と比べたPBRの変化量（絶対値）。&#10;+0.10x = 1年前より0.1倍上昇。&#10;▲は上昇、▼は下落を示す。" data-tip-pos="bottom">i</span></th>
         <th onclick="_sortScreen('per')" style="cursor:pointer" data-skey="per">加重PER</th>
         <th onclick="_sortScreen('cap')" style="cursor:pointer" data-skey="cap">時価総額</th>
         <th onclick="_sortScreen('cos')" style="cursor:pointer" data-skey="cos">上場社数</th>
         <th onclick="_sortScreen('dy')" style="cursor:pointer" data-skey="dy">配当利回り</th>
-        <th>シグナル<span class="info-icon" data-tip="強いBuy: PBR&lt;0.6x かつ 前期比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前期比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前期比&lt;0 または 前期比&gt;+0.8x" data-tip-pos="bottom">i</span></th><th>アクション</th>
+        <th>シグナル<span class="info-icon" data-tip="強いBuy: PBR&lt;0.6x かつ 前年同月比&gt;+0.2x&#10;Buy: PBR&lt;1.0x かつ 前年同月比&gt;+0.3x&#10;Neutral: 上記以外&#10;注意: PBR&gt;2.5x かつ 前年同月比&lt;0 または 前年同月比&gt;+0.8x" data-tip-pos="bottom">i</span></th><th>アクション</th>
       </tr></thead>
       <tbody id="screenBody"></tbody>
     </table>
@@ -481,15 +481,15 @@
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px" id="ovSigRow">
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-g" style="margin-right:4px">強いBuy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 0.6x（割安圏）&#10;・前期比 &gt; +0.2x（上昇トレンド）&#10;&#10;割安かつ改善中の最有力候補。">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-g" style="margin-right:4px">強いBuy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 0.6x（割安圏）&#10;・前年同月比 &gt; +0.2x（上昇トレンド）&#10;&#10;割安かつ改善中の最有力候補。">i</span></span></div>
       <div id="ovStrongBuy" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-b" style="margin-right:4px">Buy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 1.0x（1倍割れ）&#10;・前期比 &gt; +0.3x（上昇トレンド）&#10;&#10;東証改革期待と上昇勢いを兼ねた候補。">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-b" style="margin-right:4px">Buy候補</span>業種<span class="info-icon" data-tip="判定条件（AND）&#10;・PBR &lt; 1.0x（1倍割れ）&#10;・前年同月比 &gt; +0.3x（上昇トレンド）&#10;&#10;東証改革期待と上昇勢いを兼ねた候補。">i</span></span></div>
       <div id="ovBuy" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title"><span class="chip chip-r" style="margin-right:4px">注意</span>フラグ業種<span class="info-icon" data-tip="過熱注意: PBR &gt; 2.5x かつ 前期比 &lt; 0&#10;（割高で失速 → 利確・見送り検討）&#10;&#10;急騰注意: 前期比 &gt; +0.8x&#10;（短期急騰で過熱感 → 追いかけ禁物）">i</span></span></div>
+      <div class="card-hd"><span class="card-title"><span class="chip chip-r" style="margin-right:4px">注意</span>フラグ業種<span class="info-icon" data-tip="過熱注意: PBR &gt; 2.5x かつ 前年同月比 &lt; 0&#10;（割高で失速 → 利確・見送り検討）&#10;&#10;急騰注意: 前年同月比 &gt; +0.8x&#10;（短期急騰で過熱感 → 追いかけ禁物）">i</span></span></div>
       <div id="ovCaution" style="font-size:11px;line-height:1.9;min-height:48px;padding-top:2px"></div>
     </div>
   </div>
@@ -1441,7 +1441,7 @@
 
 
 <p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、開いた画面、主な操作（プラン案内・ログイン・CSV出力）、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
-<script src="./assets/jpx/member_access.js?v=members-v10"></script>
+<script src="./assets/jpx/member_access.js?v=members-v11"></script>
 <script src="./assets/jpx/analytics.js?v=analytics-v2"></script>
 
 

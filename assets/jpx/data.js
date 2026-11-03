@@ -123,7 +123,7 @@ const SAMPLE_DECOMP=(()=>{
   }).sort((a,b)=>Math.abs(b.total)-Math.abs(a.total));
 })();
 // JPX公表の業種PBRは小数1桁。業種行の pbr を pbr_fine（小数3桁）に置き換え、変化 chg とシグナル sig も
-// 細かい値で作り直す（chg の比較先は元のまま：最新月は前月、月次履歴は前年同月）。公表値は *_pub に残す。
+// 細かい値で作り直す（chg は最新月・月次履歴とも前年同月比）。公表値は *_pub に残す。
 (()=>{
   const hist=DASHBOARD_DATA?.sectors_history;
   if(!hist) return;
@@ -138,10 +138,10 @@ const SAMPLE_DECOMP=(()=>{
     if(p!=null) s.chg=+(f-p).toFixed(3);
     delete s.sig; // signal()（overview.js）が細かい値で判定し直す。規則はサーバーの _compute_signal と同じ
   };
-  yms.forEach(ym=>(hist[ym]||[]).forEach(s=>apply(s,ym,String(+ym.slice(0,4)-1)+ym.slice(4))));
+  const yearAgo=ym=>String(+ym.slice(0,4)-1)+ym.slice(4);
+  yms.forEach(ym=>(hist[ym]||[]).forEach(s=>apply(s,ym,yearAgo(ym))));
   const latest=DASHBOARD_DATA.latest_yyyymm;
-  const prev=yms.filter(ym=>ym<latest).pop();
-  (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest,prev));
+  if(latest) (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest,yearAgo(latest)));
 })();
 const SECTORS=DASHBOARD_DATA?.sectors_latest || SAMPLE_SECTORS;
 const MONTHS=DASHBOARD_DATA?.months || SAMPLE_MONTHS;
