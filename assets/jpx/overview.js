@@ -63,10 +63,11 @@ const _SIG_MAP={
 };
 function signal(s){
   if(s.sig && _SIG_MAP[s.sig]) return _SIG_MAP[s.sig];
-  if(s.pbr<0.6 && s.chg>0.2) return _SIG_MAP.strong_buy;
-  if(s.pbr<1.0 && s.chg>0.3) return _SIG_MAP.buy;
-  if(s.pbr>2.5 && s.chg<0)   return _SIG_MAP.caution_hot;
-  if(s.chg>0.8)               return _SIG_MAP.caution_surge;
+  const t=_sigThresholds();
+  if(s.pbr<0.6 && s.chg>t.strong) return _SIG_MAP.strong_buy;
+  if(s.pbr<1.0 && s.chg>t.buy)    return _SIG_MAP.buy;
+  if(s.pbr>2.5 && s.chg<0)        return _SIG_MAP.caution_hot;
+  if(s.chg>t.surge)               return _SIG_MAP.caution_surge;
   if(s.pbr>=1.0 && s.pbr<1.5)return _SIG_MAP.hold;
   return _SIG_MAP.neutral;
 }
@@ -91,7 +92,7 @@ function _applyScreenState(state){
   const slider=document.getElementById('sl-chg');
   const sliderVal=document.getElementById('sl-val');
   if(slider) slider.value=fChgMin;
-  if(sliderVal) sliderVal.textContent=fChgMin>=0?'+'+fChgMin.toFixed(1):fChgMin===-1?'｜':fChgMin.toFixed(1);
+  if(sliderVal) sliderVal.textContent=fChgMin>=0?'+'+fChgMin.toFixed(2):fChgMin===-1?'｜':fChgMin.toFixed(2);
   const searchEl=document.getElementById('screenSearch');
   if(searchEl) searchEl.value=fSearch;
   _syncFilterUrl();
@@ -101,7 +102,7 @@ function applyScreenPreset(name){
   const presets={
     all:       {preset:'all',cat:'all',pbr:'all',chg:-1,search:''},
     value:     {preset:'value',cat:'V',pbr:'below1',chg:-1,search:''},
-    improving: {preset:'improving',cat:'all',pbr:'all',chg:0.3,search:''},
+    improving: {preset:'improving',cat:'all',pbr:'all',chg:_sigThresholds().buy,search:''}, // Buy と同じ変化しきい値
     cyclical:  {preset:'cyclical',cat:'C',pbr:'all',chg:-1,search:''},
     defensive: {preset:'defensive',cat:'D',pbr:'all',chg:-1,search:''},
   };
@@ -195,7 +196,7 @@ function fToggle(el,grp){
 }
 function updateSl(){
   fChgMin=parseFloat(document.getElementById('sl-chg').value);
-  document.getElementById('sl-val').textContent=fChgMin>=0?'+'+fChgMin.toFixed(1):fChgMin===-1?'｜':fChgMin.toFixed(1);
+  document.getElementById('sl-val').textContent=fChgMin>=0?'+'+fChgMin.toFixed(2):fChgMin===-1?'｜':fChgMin.toFixed(2);
   _setPresetTagActive('all');
   _syncFilterUrl();
   renderScreen();

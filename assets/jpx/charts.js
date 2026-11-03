@@ -335,7 +335,14 @@ function updateChgBasisUI(){
   if(thTip) thTip.dataset.tip=basis==='mom'
     ?'前月末と比べたPBRの変化量（絶対値）。\n+0.10x = 先月より0.1倍上昇。\n▲は上昇、▼は下落を示す。'
     :'1年前の同じ月と比べたPBRの変化量（絶対値）。\n+0.10x = 1年前より0.1倍上昇。\n▲は上昇、▼は下落を示す。';
-  document.querySelectorAll('.chg-basis-tip').forEach(e=>{e.dataset.tip=e.dataset.tip.replace(/前年同月比|前月比/g,label);});
+  // 説明文は HTML の文面（前年同月比・+0.2x/+0.3x/+0.8x）を元に、比較期間としきい値を差し替える
+  const t=_sigThresholds();
+  const x=v=>'+'+v+'x';
+  document.querySelectorAll('.chg-basis-tip').forEach(e=>{
+    if(!e.dataset.tipTpl) e.dataset.tipTpl=e.dataset.tip;
+    e.dataset.tip=e.dataset.tipTpl.replace(/前年同月比/g,label)
+      .replace(/\+0\.2x/g,x(t.strong)).replace(/\+0\.3x/g,x(t.buy)).replace(/\+0\.8x/g,x(t.surge));
+  });
 }
 // A-3: フィルター URL 同期
 function _syncFilterUrl(){
@@ -353,7 +360,7 @@ function _restoreFilterUrl(){
   const chg=getUrlParam('chg');
   if(cat){fCat=cat;document.querySelectorAll('#fg-cat .ftag').forEach(t=>t.classList.toggle('on',t.dataset.cat===cat));}
   if(pbr){fPbr=pbr;document.querySelectorAll('#fg-pbr .ftag').forEach(t=>t.classList.toggle('on',t.dataset.pbr===pbr));}
-  if(chg!=null){const v=parseFloat(chg);if(!isNaN(v)){fChgMin=v;const sl=document.getElementById('sl-chg');const sv=document.getElementById('sl-val');if(sl)sl.value=v;if(sv)sv.textContent=v>=0?'+'+v.toFixed(1):v.toFixed(1);}}
+  if(chg!=null){const v=parseFloat(chg);if(!isNaN(v)){fChgMin=v;const sl=document.getElementById('sl-chg');const sv=document.getElementById('sl-val');if(sl)sl.value=v;if(sv)sv.textContent=v>=0?'+'+v.toFixed(2):v.toFixed(2);}}
 }
 
 // ─────────────────────────────────────────

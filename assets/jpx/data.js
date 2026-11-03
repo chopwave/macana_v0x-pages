@@ -155,6 +155,10 @@ const _CHG_ROWS=[];
   const latest=DASHBOARD_DATA.latest_yyyymm;
   if(latest) (DASHBOARD_DATA.sectors_latest||[]).forEach(s=>apply(s,latest));
 })();
+// シグナルの変化しきい値。前月比は、2020/01〜2026/10 の細かい値で前年比のしきい値と同じ頻度で出る値
+// （強いBuy 約2.7%・Buy 約2.4%・急騰注意 約1.8%）。サンプル表示は従来の値のまま。
+const _SIG_THRESHOLDS={yoy:{strong:0.2,buy:0.3,surge:0.8},mom:{strong:0.06,buy:0.09,surge:0.23}};
+function _sigThresholds(){return _SIG_THRESHOLDS[_CHG_ROWS.length?_chgBasis:'yoy'];}
 // 選択中の比較期間を全業種行の chg に反映する
 function _applyChgBasis(){
   _CHG_ROWS.forEach(s=>{s.chg=_chgBasis==='mom'?s.chg_mom:s.chg_yoy;});
