@@ -98,7 +98,7 @@
       contactLink.rel = 'noopener';
       contactLink.textContent = 'クリエイターへのお問い合わせ';
       join.appendChild(contactLink);
-      join.append('からログインに使うメールアドレスをお知らせください。登録には1日ほどかかります）');
+      join.append('からログインに使うメールアドレスをお知らせください。登録には1～2営業日かかります）');
       dialog.appendChild(join);
       const buttons = [['コード送信', sendCode], ['ログイン', verifyCode], ['ログアウト', logout], ['閉じる', () => dialog.close()]];
       for (const [label, handler] of buttons) {
