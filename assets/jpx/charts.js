@@ -473,15 +473,11 @@ function showSectorDetail(s){
   document.getElementById('dlgCap').innerHTML=s.cap!=null?`${s.cap.toFixed(1)}<span style="font-size:11px;color:var(--muted)">兆</span>`:'–';
   document.getElementById('dlgDy').innerHTML=s.dy!=null?`${s.dy.toFixed(1)}<span style="font-size:11px;color:var(--muted)">%</span>`:'–';
   // PBR 推移スパークライン（業種名で行を引き、選択中の年月までの直近12か月）
-  const _pbr1m=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const _pbr1m=PBR1_FINE;
   const row=_pbr1m.matrix?.[(_pbr1m.sectors||[]).indexOf(s.n)]||null;
   const months=_pbr1m.months||[];
   const endIdx=_activeYm&&months.includes(_activeYm)?months.indexOf(_activeYm):months.length-1;
-  // JPX公表値は0.1倍刻みなので、月次スナップショットの pbr_fine（小数3桁）があれば優先する
-  const hist=DASHBOARD_DATA?.sectors_history;
-  const fineAt=m=>hist?.[m.replace('/','')]?.find(x=>x.n===s.n)?.pbr_fine;
-  const points=(row||[]).map((v,i)=>({m:months[i],v:fineAt(months[i])??v}))
-    .slice(0,endIdx+1).filter(p=>p.v!=null).slice(-12);
+  const points=(row||[]).map((v,i)=>({m:months[i],v})).slice(0,endIdx+1).filter(p=>p.v!=null).slice(-12);
   const sparkEl=document.getElementById('dlgSparkline');
   if(points.length>=2){
     const vals=points.map(p=>p.v);

@@ -139,7 +139,7 @@ function _onYmKpi(yyyymm,ym){
   }
   const sh=DASHBOARD_DATA?.sectors_history?.[yyyymm]||SAMPLE_SECTORS_HISTORY[yyyymm]||null;
   if(!sh||!sh.length) return;
-  const below1=sh.filter(s=>s.pbr!=null&&s.pbr<1.0).length;
+  const below1=sh.filter(s=>(_finePbr(s,yyyymm)??Infinity)<1.0).length;
   const totalCap=sh.reduce((a,s)=>a+(s.cap||0),0);
   const maxS=sh.reduce((m,s)=>(s.pbr||0)>(m.pbr||0)?s:m,sh[0]||{n:'',pbr:0});
   const prevYyyyMm=prevIdx>=0?MONTHS[prevIdx].replace('/',''):null;
@@ -147,7 +147,7 @@ function _onYmKpi(yyyymm,ym){
     ? (DASHBOARD_DATA?.sectors_history?.[prevYyyyMm] || SAMPLE_SECTORS_HISTORY[prevYyyyMm] || null)
     : null;
   if(kv[2]){
-    const prevBelow1=prevSh?prevSh.filter(s=>s.pbr!=null&&s.pbr<1.0).length:null;
+    const prevBelow1=prevSh?prevSh.filter(s=>(_finePbr(s,prevYyyyMm)??Infinity)<1.0).length:null;
     const belowDiff=prevBelow1!=null?below1-prevBelow1:null;
     const belowBadge=belowDiff!=null?`<span class="kpi-badge ${belowDiff>0?'dn':'up'}">${belowDiff>0?'▲':'▼'}${Math.abs(belowDiff)}</span>`:'';
     kv[2].querySelector('.kpi-val').innerHTML=`${below1}<span style="font-size:12px;color:var(--muted)">/${sh.length}</span>${belowBadge}`;

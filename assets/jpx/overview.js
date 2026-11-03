@@ -5,7 +5,7 @@ function updateOverviewKPI(){
   const pbr=PBR_TS.length?PBR_TS[PBR_TS.length-1]:null;
   const per=PER_TS.length?PER_TS[PER_TS.length-1]:null;
   const latestYm=MONTHS.length?MONTHS[MONTHS.length-1]:null;
-  const below1=src.filter(s=>s.pbr!=null&&s.pbr<1.0).length;
+  const below1=src.filter(s=>(_finePbr(s)??Infinity)<1.0).length;
   const totalCap=src.reduce((s,a)=>s+(a.cap||0),0);
   const maxS=src.reduce((m,s)=>(s.pbr||0)>(m.pbr||0)?s:m,src[0]||{n:'',pbr:0});
   const total=src.length;

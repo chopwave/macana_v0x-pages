@@ -2,7 +2,7 @@
 function renderHeatmap(){
   const wrap=document.getElementById('heatWrap');
   if(!wrap) return;
-  const _pbr1=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const _pbr1=PBR1_FINE;
   const months6=_pbr1.months||SAMPLE_PBR1.months;
   const sectors=_pbr1.sectors||SAMPLE_PBR1.sectors;
   const matrix=_pbr1.matrix||SAMPLE_PBR1.matrix||null;
@@ -38,7 +38,7 @@ function renderHeatmap(){
             : ['#3a0e0e','#e05454']
           );
       h+=`<td class="heat-clickable" style="background:${bg};color:${fg};text-align:center;padding:3px 6px;border:1px solid ${cellBorder};font-family:var(--mono);cursor:pointer" onclick="showHeatDrilldown(this)"
-        title="クリックで詳細を表示" data-sector="${name.replace(/'/g,'&#39;')}" data-months="${months6.join(',')}">${v.toFixed(1)}</td>`;
+        title="クリックで詳細を表示" data-sector="${name.replace(/'/g,'&#39;')}" data-months="${months6.join(',')}">${v.toFixed(2)}</td>`;
     });
     h+='</tr>';
   });
@@ -53,7 +53,7 @@ function showHeatDrilldown(td){
   const title=document.getElementById('heatDlgTitle');
   if(!dlg||!body) return;
   const sect=SECTORS.find(s=>s.n===name)||{};
-  const _pbr1d=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const _pbr1d=PBR1_FINE;
   const matrix=_pbr1d.matrix||SAMPLE_PBR1.matrix||null;
   const allSectors=_pbr1d.sectors||SAMPLE_PBR1.sectors;
   const rowIdx=allSectors.indexOf(name);
@@ -78,7 +78,7 @@ function showHeatDrilldown(td){
       <div style="flex:1;height:12px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden">
         <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
       </div>
-      <span style="width:30px;text-align:right;font-family:var(--mono);font-size:10px;color:${col}">${v.toFixed(1)}x</span>
+      <span style="width:38px;text-align:right;font-family:var(--mono);font-size:10px;color:${col}">${v.toFixed(2)}x</span>
     </div>`;
   }).join('');
   body.innerHTML=`
@@ -128,7 +128,7 @@ function toggleHeatLineFilter(){
 function renderHeatmapChart(force){
   if(_heatLineInited&&!force) return;
   _heatLineInited=true;
-  const _pbr1l=DASHBOARD_DATA?.pbr1||SAMPLE_PBR1;
+  const _pbr1l=PBR1_FINE;
   const months=_pbr1l.months||SAMPLE_PBR1.months||[];
   const sectors=_pbr1l.sectors||SAMPLE_PBR1.sectors||[];
   const matrix=_pbr1l.matrix||SAMPLE_PBR1.matrix||[];

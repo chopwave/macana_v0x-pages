@@ -124,6 +124,28 @@ const SAMPLE_DECOMP=(()=>{
 })();
 const SECTORS=DASHBOARD_DATA?.sectors_latest || SAMPLE_SECTORS;
 const MONTHS=DASHBOARD_DATA?.months || SAMPLE_MONTHS;
+// JPX公表の業種PBRは小数1桁。1倍割れの判定と推移は、月次スナップショットの pbr_fine（小数3桁）を優先する。
+const _FINE_PBR=(()=>{
+  const map=new Map();
+  Object.entries(DASHBOARD_DATA?.sectors_history||{}).forEach(([ym,list])=>
+    (list||[]).forEach(s=>{if(s.pbr_fine!=null) map.set(ym+'|'+s.n,s.pbr_fine);}));
+  return map;
+})();
+// 業種PBR（細かい値があればそれ、なければ公表値）。yyyymm 省略時はその行の月、最新月の行は最新月で引く
+function _finePbr(s,yyyymm){
+  if(!s) return null;
+  if(s.pbr_fine!=null) return s.pbr_fine;
+  const ym=yyyymm||DASHBOARD_DATA?.latest_yyyymm;
+  return (ym&&_FINE_PBR.get(ym+'|'+s.n))??s.pbr??null;
+}
+// ヒートマップ・推移用の業種×月マトリクス（細かい値に置き換え済み）
+const PBR1_FINE=(()=>{
+  const p=DASHBOARD_DATA?.pbr1;
+  if(!p?.matrix) return SAMPLE_PBR1;
+  const matrix=p.matrix.map((row,ri)=>row.map((v,i)=>
+    _FINE_PBR.get(String(p.months[i]).replace('/','')+'|'+p.sectors[ri])??v));
+  return {...p,matrix};
+})();
 // 単純平均-加重平均スプレッド（avg_pbrが実データにあれば優先、なければ近似値）
 function _calcSprData(sectors){
   const hasAvp=sectors.some(s=>s.avp!=null);
