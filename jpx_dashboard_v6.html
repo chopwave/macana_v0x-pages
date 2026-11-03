@@ -56,7 +56,7 @@
   <span class="pill-toggle" id="chartModePill" onclick="toggleChartModePill()" title="チャートモード切替（Chart.js / Plotly）">Chart.js ⇌</span>
   <span class="pill-toggle" id="chgBasisPill" onclick="toggleChgBasis()" title="PBR変化の比較期間を切替（前年同月比 / 前月比）" style="display:none">前年比 ⇌</span>
   <div class="tb-right">
-    <button class="tb-btn" id="csvExportBtn" onclick="exportCSV()" title="CSV出力は有償会員向けです" data-tip="CSV出力は有償会員向けです。&#10;会員ログイン後に利用できます。" data-tip-pos="bottom">🔒 CSV出力</button>
+    <button class="tb-btn" id="csvExportBtn" onclick="exportCSV()" title="業種CSV出力は有償会員向けです" data-tip="業種CSV出力は有償会員向けです。&#10;会員ログイン後に利用できます。" data-tip-pos="bottom">🔒 業種CSV出力</button>
     <button class="tb-btn" onclick="window.print()" title="現在表示中のページを印刷">印刷</button>
     <button class="tb-btn" onclick="showShortcutHelp&&showShortcutHelp()" title="キーボードショートカット一覧 (?)">?</button>
   </div>
@@ -160,7 +160,7 @@
       <div>
         <div style="font-weight:500;color:var(--accent);margin-bottom:4px">🔒 有償会員（メンバーシップ）限定機能</div>
         <div style="color:var(--muted)">
-          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>。上部の <strong>🔒 実データへ</strong> または銘柄別評価の <strong>🔒 会員ログイン</strong> からメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
+          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>業種CSV出力</strong>。上部の <strong>🔒 実データへ</strong> または銘柄別評価の <strong>🔒 会員ログイン</strong> からメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
         </div>
         <div class="plan-cta" style="margin-top:8px;color:var(--muted)">noteのメンバーシップ「プランC」（月2,200円）で利用できます。登録と利用にはメールアドレスが必要です。参加後、note の<a class="plan-link" data-track-event="event/registration_contact/readme" href="https://note.com/chopwave/message" target="_blank" rel="noopener">クリエイターへのお問い合わせ</a>からログインに使うメールアドレスをお知らせください。登録には1～2営業日かかります。 <a class="plan-link" data-plan-place="readme" href="https://note.com/chopwave/membership/join" target="_blank" rel="noopener">プランを見る（note）</a></div>
       </div>
@@ -217,8 +217,8 @@
         <div style="color:var(--muted)">上部の <strong>前年比 ⇌</strong> ボタンで、業種のPBR変化を<strong>前年同月比</strong>と<strong>前月比</strong>で切り替えられます。スクリーニング表・ランキング・シグナル・CSV出力がそろって切り替わり、シグナルのしきい値も比較期間に合わせて変わります。選択はブラウザに保存されます。</div>
       </div>
       <div>
-        <div style="font-weight:500;color:var(--text);margin-bottom:4px">CSV出力 / 印刷</div>
-        <div style="color:var(--muted)">右上の <strong>CSV出力</strong> は有償会員向けで、年月セレクターで選んだ月の<strong>33業種すべて</strong>の業種データ（業種・カテゴリ・加重PBR・PBR変化・加重PER・時価総額・上場社数・配当利回り・シグナル）を保存します。スクリーニングの絞り込みは反映されません。ファイル名に年月と比較期間が入ります（例：jpx_screening_202610_yoy.csv）。配当利回りはスクリーニング対象銘柄の時価総額加重平均で、データのない月は空欄です。<strong>印刷</strong> ボタンは無料で利用でき、ブラウザの印刷ダイアログを開きます（印刷用CSSで最適化済み）。</div>
+        <div style="font-weight:500;color:var(--text);margin-bottom:4px">業種CSV出力 / 印刷</div>
+        <div style="color:var(--muted)">右上の <strong>業種CSV出力</strong> は有償会員向けで、年月セレクターで選んだ月の<strong>33業種すべて</strong>の業種データ（業種・カテゴリ・加重PBR・PBR変化・加重PER・時価総額・上場社数・配当利回り・シグナル）を保存します。スクリーニングの絞り込みは反映されません。ファイル名に年月と比較期間が入ります（例：jpx_screening_202610_yoy.csv）。配当利回りはスクリーニング対象銘柄の時価総額加重平均で、データのない月は空欄です。<strong>印刷</strong> ボタンは無料で利用でき、ブラウザの印刷ダイアログを開きます（印刷用CSSで最適化済み）。</div>
       </div>
       <div>
         <div style="font-weight:500;color:var(--text);margin-bottom:4px">列ヘッダーの ⓘ アイコン</div>
@@ -1245,7 +1245,7 @@
       <div class="feat"><div class="feat-head">イベント別反応</div><div class="feat-sub">5マクロイベント × PBR変化・シェア変化</div></div>
       <div class="feat"><div class="feat-head">散布図・要因分解</div><div class="feat-sub">時価総額×PBRバブル／BPS成長・PBR膨張分解</div></div>
       <div class="feat"><div class="feat-head">チームメモ</div><div class="feat-sub">セッション内の仮説・シグナル記録（揮発性）</div></div>
-      <div class="feat"><div class="feat-head">CSV出力（有償）</div><div class="feat-sub">選択月の33業種データ（配当利回り付き）をCSVで保存</div></div>
+      <div class="feat"><div class="feat-head">業種CSV出力（有償）</div><div class="feat-sub">選択月の33業種データ（配当利回り付き）をCSVで保存</div></div>
       <div class="feat"><div class="feat-head">景気循環分析（④）</div><div class="feat-sub">判定・推奨・サイクル表・詳細の4タブで局面と業種優位を確認</div></div>
     </div>
   </div>
@@ -1446,7 +1446,7 @@
 
 
 <p style="margin:24px auto 16px;max-width:960px;padding:0 16px;font-size:11px;color:var(--hint)">アクセス解析について：閲覧したページ、開いた画面、主な操作（プラン案内・ログイン・CSV出力）、参照元のサイト名、リンクに付いた流入元の目印、端末の種類（スマホ・タブレット・PC）を集計しています。Cookie、IPアドレス、ブラウザの詳細情報は保存しません。ブラウザの「トラッキング拒否」設定が有効な場合は送信しません。会員の方は、画面を開いた日と回数を会員管理のために記録します。</p>
-<script src="./assets/jpx/member_access.js?v=members-v15"></script>
+<script src="./assets/jpx/member_access.js?v=members-v16"></script>
 <script src="./assets/jpx/analytics.js?v=analytics-v2"></script>
 
 

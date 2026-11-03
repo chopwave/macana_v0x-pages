@@ -184,11 +184,11 @@ function updateCsvExportUI(){
   const btn=document.getElementById('csvExportBtn');
   if(!btn) return;
   const member=typeof _isMember==='function' && _isMember();
-  btn.textContent=member?'CSV出力':'🔒 CSV出力';
-  btn.title=member?'スクリーニング結果をCSV保存':'CSV出力は有償会員向けです';
+  btn.textContent=member?'業種CSV出力':'🔒 業種CSV出力';
+  btn.title=member?'選択中の年月の33業種データをCSV保存':'業種CSV出力は有償会員向けです';
   btn.setAttribute('data-tip',member
-    ? 'スクリーニング結果をCSV保存できます。'
-    : 'CSV出力は有償会員向けです。&#10;会員ログイン後に利用できます。');
+    ? '選択中の年月の33業種データ（配当利回り付き）をCSV保存できます。\nスクリーニングの絞り込みは反映されません。'
+    : '業種CSV出力は有償会員向けです。\n会員ログイン後に利用できます。');
 }
 function exportCSV(){
   if(typeof _isMember==='function' && !_isMember()){
