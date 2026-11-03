@@ -58,7 +58,6 @@
     <button class="tb-btn" id="csvExportBtn" onclick="exportCSV()" title="CSV出力は有償会員向けです" data-tip="CSV出力は有償会員向けです。&#10;会員ログイン後に利用できます。" data-tip-pos="bottom">🔒 CSV出力</button>
     <button class="tb-btn" onclick="window.print()" title="現在表示中のページを印刷">印刷</button>
     <button class="tb-btn" onclick="showShortcutHelp&&showShortcutHelp()" title="キーボードショートカット一覧 (?)">?</button>
-    <button class="tb-btn" onclick="goto('notes',null,true)" title="有償会員限定の機能です" data-tip="チームメモは有償会員向けです。&#10;イベント別メモと横断メモを保存できます。" data-tip-pos="bottom">🔒 チームメモ</button>
   </div>
 </header>
 
@@ -124,14 +123,6 @@
     <span class="nav-badge" style="background:#7c3a0022;border:1px solid #c0562055;color:#c05620" title="有償会員限定" data-tip="銘柄別評価のスコア・ランク・ステップ通過は有償会員向けです。" data-tip-pos="right">🔒</span>
     <span class="nav-badge" id="nb-eval"></span>
   </div>
-
-  <div class="nav-group">チーム：共有</div>
-  <div class="nav-item" onclick="goto('notes',this)">
-    <svg class="nav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="10" height="12" rx="1"/><line x1="4" y1="5" x2="10" y2="5"/><line x1="4" y1="8" x2="8" y2="8"/></svg>
-    チームメモ
-    <span class="nav-badge" style="background:#7c3a0022;border:1px solid #c0562055;color:#c05620" title="有償会員限定" data-tip="チームメモは有償会員向けです。" data-tip-pos="right">🔒</span>
-    <span class="nav-badge g" id="nb-notes">0</span>
-  </div>
 </nav>
 
 <!-- main -->
@@ -167,7 +158,7 @@
       <div>
         <div style="font-weight:500;color:var(--accent);margin-bottom:4px">🔒 有償会員（メンバーシップ）限定機能</div>
         <div style="color:var(--muted)">
-          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>、<strong>チームメモ</strong>。右上の <strong>🔒 会員ログイン</strong> ボタンからメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
+          銘柄一覧の<strong>全上場銘柄</strong>表示（実データ）、銘柄別評価の<strong>スコア・ランク（S/A/B/C/D）</strong>・<strong>7ステップ通過状況</strong>の閲覧、<strong>CSV出力</strong>。右上の <strong>🔒 会員ログイン</strong> ボタンからメールアドレスと確認コードでログインし、有効な会員資格を確認後に閲覧できます。
         </div>
       </div>
     </div>
@@ -328,23 +319,13 @@
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:14px;padding:10px 0">
         <div style="width:140px;flex-shrink:0">
           <div style="font-weight:500;font-size:12px;color:var(--text)">銘柄別評価 <span style="font-size:9px;padding:1px 5px;background:#7c3a0022;border:1px solid #c0562055;color:#c05620;border-radius:3px">🔒 有償</span></div>
           <div style="font-size:10px;color:var(--muted);margin-top:2px">銘柄 › 高配当スクリーニング結果</div>
         </div>
         <div style="font-size:11px;color:var(--muted);line-height:1.7">
           7段階スクリーニングを通過した銘柄の評価結果を業種別に表示します。コード・銘柄名・<strong>総合スコア（0〜100点）</strong>・<strong>ランク（S/A/B/C/D）</strong>・配当利回り・PBR・PER・株価・時価総額・<strong>Step1〜7の通過状況</strong>を確認できます。スコア・ランク・ステップ通過は有償会員のみ閲覧可能（🔒で表示）。ヘッダークリックで昇降順ソート、業種ピル・ステップフィルター・テキスト検索・ランクフィルターも利用可能。
-        </div>
-      </div>
-
-      <div style="display:flex;gap:14px;padding:10px 0">
-        <div style="width:140px;flex-shrink:0">
-          <div style="font-weight:500;font-size:12px;color:var(--text)">チームメモ</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px">チーム › 仮説・シグナル記録</div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.7">
-          分析中の気づき・仮説・投資シグナルをメモとして記録できます。Markdown記法対応。ピン留め機能あり。なお保存はブラウザのlocalStorageを使用するため、セッションをまたいで保持されますがブラウザのデータ削除で消える点にご注意ください。
         </div>
       </div>
 
@@ -1375,7 +1356,6 @@
     <div class="page-summary"><strong>概要：</strong>7ステップの条件で候補銘柄を絞り込み、スコアと通過状況を確認します。</div>
     <div class="page-links">
       <button class="page-link" onclick="goto('stocks')">関連: 銘柄一覧へ</button>
-      <button class="page-link" onclick="goto('notes',null,true)">関連: チームメモへ</button>
     </div>
   </div>
   <div class="card" style="margin-bottom:12px">

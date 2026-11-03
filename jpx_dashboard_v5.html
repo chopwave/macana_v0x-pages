@@ -337,7 +337,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
     <button class="tb-btn" onclick="exportCSV()">CSV出力</button>
     <button class="tb-btn" onclick="window.print()" title="現在表示中のページを印刷">印刷</button>
     <button class="tb-btn" onclick="showShortcutHelp&&showShortcutHelp()" title="キーボードショートカット一覧 (?)">?</button>
-    <button class="tb-btn" onclick="goto('notes',null,true)">チームメモ</button>
   </div>
 </header>
 
@@ -389,13 +388,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
     <svg class="nav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><polyline points="7,4 7,7 9,9"/><line x1="7" y1="2" x2="7" y2="1"/></svg>
     景気循環分析
     <span class="nav-badge g" id="nb-cycle">④</span>
-  </div>
-
-  <div class="nav-group">チーム</div>
-  <div class="nav-item" onclick="goto('notes',this)">
-    <svg class="nav-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="1" width="10" height="12" rx="1"/><line x1="4" y1="5" x2="10" y2="5"/><line x1="4" y1="8" x2="8" y2="8"/></svg>
-    チームメモ
-    <span class="nav-badge g" id="nb-notes">0</span>
   </div>
 </nav>
 
@@ -507,23 +499,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13
         </div>
       </div>
 
-      <div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:14px;padding:10px 0">
         <div style="width:140px;flex-shrink:0">
           <div style="font-weight:500;font-size:12px;color:var(--text)">景気循環分析</div>
           <div style="font-size:10px;color:var(--muted);margin-top:2px">分析④ › サイクル判定</div>
         </div>
         <div style="font-size:11px;color:var(--muted);line-height:1.7">
           景気循環フェーズ（回復・拡張・インフレ・後退）を判定し、フェーズに応じた業種推奨（BUY/HOLD/SELL）を表示。Zスコアヒートマップ・景気指標・Cyclical/Defensive強度も確認できます。
-        </div>
-      </div>
-
-      <div style="display:flex;gap:14px;padding:10px 0">
-        <div style="width:140px;flex-shrink:0">
-          <div style="font-weight:500;font-size:12px;color:var(--text)">チームメモ</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px">チーム › 仮説・シグナル記録</div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.7">
-          分析中の気づき・仮説・投資シグナルをメモとして記録できます。Markdown記法対応。ピン留め機能あり。なお保存はブラウザのlocalStorageを使用するため、セッションをまたいで保持されますがブラウザのデータ削除で消える点にご注意ください。
         </div>
       </div>
 
@@ -2297,8 +2279,12 @@ function loadNotes(){
   const shared=(DASHBOARD_DATA?.team_notes||[]).map(n=>({...n,_shared:true}));
   const storedKeys=new Set(stored.map(_noteKey));
   notes=[...stored,...shared.filter(n=>!storedKeys.has(_noteKey(n)))];
-  document.getElementById('nb-notes').textContent=notes.length;
+  updateNotesBadge();
   renderNotes();
+}
+function updateNotesBadge(){
+  const nb=document.getElementById('nb-notes');
+  if(nb) nb.textContent=notes.length;
 }
 function saveNote(){
   const t=document.getElementById('noteText').value.trim();
@@ -2314,7 +2300,7 @@ function addNote(text,context,tag,author,team){
   const n={text,context,tag,author,team:team||'全員',ts:new Date().toLocaleString('ja')};
   notes.unshift(n);
   persistNotes();
-  document.getElementById('nb-notes').textContent=notes.length;
+  updateNotesBadge();
   renderNotes();
 }
 function addToNote(name,pbr,chg){
@@ -2327,7 +2313,7 @@ function addToNote(name,pbr,chg){
 function delNote(i){
   notes.splice(i,1);
   persistNotes();
-  document.getElementById('nb-notes').textContent=notes.length;
+  updateNotesBadge();
   renderNotes();
 }
 function filterNotes(type,val){
@@ -2393,7 +2379,7 @@ function importNotes(input){
       const newNotes=imported.filter(n=>!existingKeys.has(_noteKey(n)));
       notes=[...newNotes,...notes];
       persistNotes();
-      document.getElementById('nb-notes').textContent=notes.length;
+      updateNotesBadge();
       renderNotes();
       alert(`${newNotes.length}件のメモをインポートしました（重複${imported.length-newNotes.length}件除外）`);
     }catch(_e){alert('JSONファイルの読み込みに失敗しました');}
@@ -2511,8 +2497,8 @@ function renderPhaseHistory(){
 
 // ────── C-5: キーボードショートカット ──────
 (function(){
-  const PAGES=['overview','screen','val','pbr1','event','scatter','decomp','cycle','notes'];
-  const PAGE_LABELS=['1:全体サマリー','2:スクリーニング','3:バリュエーション','4:PBR1倍割れ','5:イベント','6:散布図','7:成長要因','8:景気循環','9:チームメモ'];
+  const PAGES=['overview','screen','val','pbr1','event','scatter','decomp','cycle'];
+  const PAGE_LABELS=['1:全体サマリー','2:スクリーニング','3:バリュエーション','4:PBR1倍割れ','5:イベント','6:散布図','7:成長要因','8:景気循環'];
   function advanceYm(dir){
     const sel=document.getElementById('ymSel');
     if(!sel) return;
